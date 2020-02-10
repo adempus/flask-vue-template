@@ -1,8 +1,11 @@
 # Editor directories and files
 .idea
+venv
+db_credentials.json
 .vscode
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.cfg
