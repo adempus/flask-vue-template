@@ -1,27 +1,28 @@
+from core import db
+from core import getDBCredentials
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_sqlalchemy import SQLAlchemy
-import json
+from flask_migrate import Migrate
 
-def getDBCredentials():
-    db_uri = 'mysql://adempus:09sIUDpjhXjnfyJ@localhost/flask_vue_db'
-    with open('./db_credentials.json', 'r') as jsonFile:
-        data = json.load(jsonFile)
-    return f"{data['driver']}://{data['user']}:{data['password']}@{data['host']}:{data['port']}/{data['db']}"
+DEBUG =True
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(__name__)
+    # CORS setup
+    CORS(app, resources={r'/*': {'origins': '*'}})
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials()
+    return app
+
+app = create_app()
+app.app_context().push()
+# database initialization
+db.init_app(app)
+migrate = Migrate(app, db)
 
 
-# enable debugging
-DEBUG = True
-# app instance
-app = Flask(__name__)
-app.config.from_object(__name__)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials()
-
-db = SQLAlchemy(app)
-
-# CORS setup
-CORS(app, resources={ r'/*': {'origins': '*' }})
+'''***********  backend routes  *************'''
 
 
 @app.route('/')

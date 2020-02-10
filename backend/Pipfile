@@ -6,8 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-flask-sqlalchemy = "*"
+flask-migrate = "*"
 flask-cors = "*"
+flask = "*"
 
 [requires]
 python_version = "3.7"
