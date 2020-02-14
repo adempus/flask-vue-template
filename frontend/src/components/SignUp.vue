@@ -5,8 +5,9 @@
         <h4>Sign Up</h4>
       </b-card-header>
       <b-card class="text-center">
-      <b-form>
+      <b-form @submit.prevent="submit">
         <b-row>
+          <!-- First name-->
           <b-col>
             <b-form-group
               id="firstNameGroup"
@@ -18,12 +19,22 @@
               <b-form-input
                 id="first-name"
                 v-model="firstName"
-                required
                 placeholder="John"
+                aria-describedby="first-name-input-feedback"
+                :state="validateState('firstName')"
                 trim
               ></b-form-input>
+              <div v-if="!this.$v.firstName.$dirty">
+                <b-form-invalid-feedback
+                  align="left"
+                  :state="this.$v.firstName.required"
+                  id="first-name-input-feedback">
+                  First name is required
+                </b-form-invalid-feedback>
+              </div>
             </b-form-group>
           </b-col>
+          <!-- Last name-->
           <b-col>
             <b-form-group
               id="lastNameGroup"
@@ -35,13 +46,13 @@
               <b-form-input
                 id="last-name"
                 v-model="lastName"
-                required
                 placeholder="Doe"
                 trim
               ></b-form-input>
             </b-form-group>
           </b-col>
         </b-row>
+        <!-- username -->
         <b-form-group
           id="usernameGroup"
           label="Username:"
@@ -57,7 +68,7 @@
             trim
           ></b-form-input>
         </b-form-group>
-
+        <!-- email -->
         <b-form-group
           id="emailGroup"
           label="Email:"
@@ -66,7 +77,6 @@
           class="input-label-text"
         >
           <b-form-input
-            v-validate="'required|email'" name="email"
             id="email"
             v-model="email"
             required
@@ -74,8 +84,8 @@
             trim
           ></b-form-input>
         </b-form-group>
-
         <b-row>
+        <!-- Password -->
           <b-col>
             <b-form-group
               id="password"
@@ -92,6 +102,7 @@
               ></b-form-input>
             </b-form-group>
           </b-col>
+          <!-- Confirm Password -->
           <b-col>
             <b-form-group
               id="checkedPassword"
@@ -109,8 +120,11 @@
             </b-form-group>
           </b-col>
         </b-row>
+        <!-- Submit button -->
         <b-row class="justify-content-end mt-4 pl-3 pr-3">
-          <b-button type="submit" block variant="info">Submit</b-button>
+          <b-button type="submit" block variant="info" v-on:click="submitClicked = true">
+            Submit
+          </b-button>
         </b-row>
       </b-form>
       </b-card>
@@ -119,6 +133,8 @@
 </template>
 
 <script>
+  import { required, minLength } from 'vuelidate/lib/validators';
+
   export default {
     data: () => ({
       firstName: '',
@@ -127,9 +143,23 @@
       username: '',
       password: '',
       checkedPassword: '',
+      submitClicked: false,
     }),
 
+    validations: {
+      firstName: {
+        required
+      },
+    },
+
     methods: {
+      validateState(value) {
+        const { $dirty, $error } = this.$v[value];
+        return $dirty ? !$error : null;
+      },
+      submit() {
+        console.log('Submitted');
+      },
     },
   };
 </script>
