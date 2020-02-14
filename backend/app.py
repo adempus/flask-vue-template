@@ -4,7 +4,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_migrate import Migrate
 
-DEBUG =True
+DEBUG = True
 
 def create_app():
     app = Flask(__name__)
