@@ -24,12 +24,13 @@
                 :state="validateState('firstName')"
                 trim
               ></b-form-input>
-              <div v-if="!this.$v.firstName.$dirty">
+              <!-- first name invalid feedback -->
+              <div v-if="!this.$v.firstName.required && submitClicked">
                 <b-form-invalid-feedback
                   align="left"
                   :state="this.$v.firstName.required"
                   id="first-name-input-feedback">
-                  First name is required
+                  * First name is required
                 </b-form-invalid-feedback>
               </div>
             </b-form-group>
@@ -47,26 +48,55 @@
                 id="last-name"
                 v-model="lastName"
                 placeholder="Doe"
+                aria-describedby="last-name-input-feedback"
+                :state="validateState('lastName')"
                 trim
               ></b-form-input>
+              <!-- last name invalid feedback -->
+               <b-form-invalid-feedback v-if="!this.$v.lastName.required && submitClicked"
+                align="left"
+                :state="this.$v.lastName.required"
+                id="last-name-input-feedback">
+                * Last name is required
+               </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
         </b-row>
         <!-- username -->
         <b-form-group
           id="usernameGroup"
-          label="Username:"
+          label="Username"
           label-for="user-name"
           label-align="left"
-          class="input-label-text"
-        >
+          class="input-label-text">
           <b-form-input
             id="user-name"
             v-model="username"
-            required
             placeholder="Enter a username"
+            :state="validateState('username')"
+            aria-describedby="username-input-feedback"
             trim
           ></b-form-input>
+            <!-- username name requirement invalid feedback -->
+            <b-form-invalid-feedback v-if="!this.$v.username.required && submitClicked"
+              align="left"
+              :state="this.$v.username.required"
+              id="username-input-feedback">
+              * Username name is required
+            </b-form-invalid-feedback>
+          <!-- username name minimum length invalid feedback -->
+          <b-form-invalid-feedback v-if="!this.$v.username.minLength && submitClicked"
+              align="left"
+              :state="this.$v.username.minLength"
+              id="username-input-feedback">
+              * Must be 3 or more characters
+            </b-form-invalid-feedback>
+          <!-- username name exsits feedback -->
+          <b-form-invalid-feedback
+            align="left"
+            id="username-input-feedback">
+            * This username is already in use
+          </b-form-invalid-feedback>
         </b-form-group>
         <!-- email -->
         <b-form-group
@@ -74,15 +104,22 @@
           label="Email:"
           label-for="email"
           label-align="left"
-          class="input-label-text"
-        >
+          class="input-label-text">
           <b-form-input
             id="email"
             v-model="email"
-            required
             placeholder="useremail@domain.com"
+            aria-describedby="email-input-feedback"
+            :state="validateState('email')"
             trim
           ></b-form-input>
+          <!-- email invalid feedback -->
+          <b-form-invalid-feedback v-if="!this.$v.email.required && submitClicked"
+            align="left"
+            :state="this.$v.email.required"
+            id="email-input-feedback">
+            * Email is required
+          </b-form-invalid-feedback>
         </b-form-group>
         <b-row>
         <!-- Password -->
@@ -97,9 +134,22 @@
               <b-form-input
                 id="password-input"
                 v-model="password"
-                required
                 type="password"
+                aria-describedby="password-input-feedback"
               ></b-form-input>
+              <!-- password required feedback -->
+              <b-form-invalid-feedback v-if="!this.$v.password.required && submitClicked"
+                align="left"
+                :state="this.$v.password.required"
+                id="password-input-feedback">
+                * Password is required
+              </b-form-invalid-feedback>
+              <b-form-invalid-feedback v-if="!this.$v.password.minLength && submitClicked"
+                align="left"
+                :state="this.$v.password.minLength"
+                id="password-input-feedback">
+                * Password must be 7 character or more
+              </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
           <!-- Confirm Password -->
@@ -114,17 +164,23 @@
               <b-form-input
                 id="checked-pass"
                 v-model="checkedPassword"
-                required
                 type="password"
+                aria-describedby="checked-password-input-feedback"
               ></b-form-input>
+              <!-- checkedPassword match feedback -->
+              <b-form-invalid-feedback
+                v-if="!this.$v.checkedPassword.sameAsPassword && submitClicked"
+                align="left"
+                :state="this.$v.checkedPassword.sameAsPassword"
+                id="checked-password-input-feedback">
+                * Must match password
+              </b-form-invalid-feedback>
             </b-form-group>
           </b-col>
         </b-row>
         <!-- Submit button -->
         <b-row class="justify-content-end mt-4 pl-3 pr-3">
-          <b-button type="submit" block variant="info" v-on:click="submitClicked = true">
-            Submit
-          </b-button>
+          <b-button type="submit" block variant="info">Submit</b-button>
         </b-row>
       </b-form>
       </b-card>
@@ -133,7 +189,9 @@
 </template>
 
 <script>
-  import { required, minLength } from 'vuelidate/lib/validators';
+  import axios from 'axios';
+  import { _ } from 'lodash';
+  import { required, minLength, sameAs } from 'vuelidate/lib/validators';
 
   export default {
     data: () => ({
@@ -144,12 +202,34 @@
       password: '',
       checkedPassword: '',
       submitClicked: false,
+      signUpSuccess: false,
+      signUpResponse: null,
     }),
 
     validations: {
       firstName: {
         required
       },
+      lastName: {
+        required
+      },
+      username: {
+        required,
+        minLength: minLength(3),
+        // exists: this.usernameExists(),
+      },
+      email: {
+        required,
+        // exists: existingEmail,
+      },
+      password: {
+        required,
+        minLength: minLength(7)
+      },
+      checkedPassword: {
+        required,
+        sameAsPassword: sameAs('password')
+      }
     },
 
     methods: {
@@ -157,10 +237,58 @@
         const { $dirty, $error } = this.$v[value];
         return $dirty ? !$error : null;
       },
-      submit() {
-        console.log('Submitted');
+      requestUserSignUp() {
+        const endpoint = 'http://localhost:5000/sign-up';
+        return axios.post(endpoint, {
+          firstName: this.firstName,
+          lastName: this.lastName,
+          userName: this.username,
+          email: this.email,
+          password: this.password
+        });
       },
+      submit() {
+        this.submitClicked = true;
+        if (this.$v.$invalid) {
+          console.log('Invalid credentials provided');
+        } else {
+          this.requestUserSignUp().then((response) => {
+            console.log('response:', response);
+            this.signUpResponse = response.data;
+            if (response.error === true) {
+              this.signUpSuccess = false;
+            } else {
+              this.signUpSuccess = true;
+            }
+          }).catch((error) => {
+            this.signUpSuccess = false;
+            console.log('An error occurred.');
+            console.error(error);
+          });
+        }
+      },
+
     },
+    computed: {
+      // emailExists() {
+      //   if (this.submitClicked) {
+      //     if (_.has(this.signUpResponse, 'message')) {
+      //       return _.has(this.signUpResponse.message, 'emailExists')
+      //         ? this.signUpResponse.message.emailExists : false;
+      //     }
+      //   }
+      //   return false;
+      // },
+      // usernameExists() {
+      //   if (this.submitClicked) {
+      //     if (_.has(this.signUpResponse, 'message')) {
+      //       return _.has(this.signUpResponse.message, 'usernameExists')
+      //         ? this.signUpResponse.message.usernameExists : false;
+      //     }
+      //   }
+      //   return false;
+      // },
+    }
   };
 </script>
 

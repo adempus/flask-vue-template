@@ -9,6 +9,7 @@ verify_ssl = true
 flask-migrate = "*"
 flask-cors = "*"
 flask = "*"
+mysqlclient = "*"
 
 [requires]
 python_version = "3.7"
