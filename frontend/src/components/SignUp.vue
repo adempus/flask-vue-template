@@ -16,17 +16,16 @@
               label="First Name:"
               label-for="first-name"
               label-align="left"
-              class="input-label-text"
-            >
+              class="input-label-text">
               <b-form-input
                 id="first-name"
                 v-model="firstName"
                 placeholder="John"
                 aria-describedby="first-name-input-feedback"
                 :state="validateState('firstName')"
-                trim
-              ></b-form-input>
-<!--               first name invalid feedback-->
+                trim>
+              </b-form-input>
+              <!-- first name invalid feedback-->
               <div v-if="!this.$v.firstName.required && submitClicked">
                 <b-form-invalid-feedback
                   align="left"
@@ -44,16 +43,15 @@
               label="Last Name:"
               label-for="last-name"
               label-align="left"
-              class="input-label-text"
-            >
+              class="input-label-text">
               <b-form-input
                 id="last-name"
                 v-model="lastName"
                 placeholder="Doe"
                 aria-describedby="last-name-input-feedback"
                 :state="validateState('lastName')"
-                trim
-              ></b-form-input>
+                trim>
+              </b-form-input>
               <!-- last name invalid feedback -->
                <b-form-invalid-feedback v-if="!this.$v.lastName.required && submitClicked"
                 align="left"
@@ -78,8 +76,8 @@
             @input="modifyUsername()"
             :state="validateState('username')"
             aria-describedby="username-input-feedback"
-            trim
-          ></b-form-input>
+            trim>
+          </b-form-input>
             <!-- username name requirement invalid feedback -->
             <b-form-invalid-feedback v-if="!this.$v.username.required && submitClicked"
               align="left"
@@ -92,10 +90,11 @@
               align="left"
               :state="this.$v.username.minLength"
               id="username-input-feedback">
-              * Must be 3 or more characters
+              * Must be 2 or more characters
             </b-form-invalid-feedback>
           <!-- username name exsits feedback -->
-          <b-form-invalid-feedback v-if="submitClicked && !this.$v.email.usernameUnique"
+          <b-form-invalid-feedback
+            v-if="this.$v.username.required && !this.$v.email.usernameUnique && submitClicked"
             align="left"
             :state="this.$v.username.usernameUnique"
             id="username-input-feedback">
@@ -116,8 +115,8 @@
             aria-describedby="email-input-feedback"
             @input="modifyEmail()"
             :state="validateState('email')"
-            trim
-          ></b-form-input>
+            trim>
+          </b-form-input>
           <!-- email invalid feedback -->
           <b-form-invalid-feedback v-if="!this.$v.email.required && submitClicked"
             align="left"
@@ -126,7 +125,8 @@
             * Email is required
           </b-form-invalid-feedback>
           <!-- exsiting email feedback -->
-          <b-form-invalid-feedback v-if="submitClicked && !this.$v.email.emailUnique"
+          <b-form-invalid-feedback
+            v-if="this.$v.email.required && submitClicked && !this.$v.email.emailUnique"
             align="left"
             :state="this.$v.email.emailUnique"
             id="email-input-feedback">
@@ -141,14 +141,13 @@
               label="Password:"
               label-for="password-input"
               label-align="left"
-              class="input-label-text"
-            >
+              class="input-label-text">
               <b-form-input
                 id="password-input"
                 v-model="password"
                 type="password"
-                aria-describedby="password-input-feedback"
-              ></b-form-input>
+                aria-describedby="password-input-feedback">
+              </b-form-input>
               <!-- password required feedback -->
               <b-form-invalid-feedback v-if="!this.$v.password.required && submitClicked"
                 align="left"
@@ -171,14 +170,13 @@
               label="Confirm Password"
               label-for="checked-pass"
               label-align="left"
-              class="input-label-text"
-            >
+              class="input-label-text">
               <b-form-input
                 id="checked-pass"
                 v-model="checkedPassword"
                 type="password"
-                aria-describedby="checked-password-input-feedback"
-              ></b-form-input>
+                aria-describedby="checked-password-input-feedback">
+              </b-form-input>
               <!-- checkedPassword match feedback -->
               <b-form-invalid-feedback
                 v-if="!this.$v.checkedPassword.sameAsPassword && submitClicked"
@@ -194,6 +192,12 @@
         <b-row class="justify-content-end mt-4 pl-3 pr-3">
           <b-button type="submit" block variant="info">Submit</b-button>
         </b-row>
+        <b-row class="float-right">
+          <b-link href="#" class="pt-3 mr-4 sign-in-link">
+            Already a user? Sign in
+            <b-icon-chevron-right></b-icon-chevron-right>
+          </b-link>
+        </b-row>
       </b-form>
       </b-card>
     </div>
@@ -204,10 +208,10 @@
   import axios from 'axios';
   import _ from 'lodash';
   import Vue from 'vue';
-  import { helpers, required, minLength, sameAs, email } from 'vuelidate/lib/validators';
+  import { required, minLength, sameAs, email } from 'vuelidate/lib/validators';
 
   const emailUnique = (value, vm) => !vm.isExistingEmail
-    && value.toUpperCase() !== vm.attemptedEmail.toUpperCase();
+    && (value.toUpperCase() !== vm.attemptedEmail.toUpperCase());
   const usernameUnique = (value, vm) => !vm.isExistingUsername
     && value.toUpperCase() !== vm.attemptedUsername.toUpperCase();
 
@@ -226,10 +230,10 @@
       },
       submitClicked: false,
       signUpSuccess: false,
+      isExistingUsername: false,
       isExistingEmail: false,
       attemptedEmail: '',
       attemptedUsername: '',
-      isExistingUsername: false,
       signUpResponse: null,
     }),
 
@@ -242,7 +246,7 @@
       },
       username: {
         required,
-        minLength: minLength(3),
+        minLength: minLength(2),
         usernameUnique,
       },
       email: {
@@ -340,5 +344,10 @@
 
   .form-width {
     width: 35vw;
+  }
+
+  .sign-in-link {
+    font-size: 0.75em;
+    color: #343A40;
   }
 </style>
