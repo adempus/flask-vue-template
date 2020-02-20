@@ -206,8 +206,10 @@
   import Vue from 'vue';
   import { helpers, required, minLength, sameAs, email } from 'vuelidate/lib/validators';
 
-  const emailUnique = (value, vm) => !vm.isExistingEmail && value !== vm.attemptedEmail;
-  const usernameUnique = (value, vm) => !vm.isExistingUsername && value !== vm.attemptedUsername;
+  const emailUnique = (value, vm) => !vm.isExistingEmail
+    && value.toUpperCase() !== vm.attemptedEmail.toUpperCase();
+  const usernameUnique = (value, vm) => !vm.isExistingUsername
+    && value.toUpperCase() !== vm.attemptedUsername.toUpperCase();
 
   export default {
     name: 'SignUp',
@@ -282,12 +284,16 @@
       determineError() {
         if (_.has(this.signUpResponse, 'message.emailExists')) {
           this.isExistingEmail = this.signUpResponse.message.emailExists;
-          this.attemptedEmail = this.email;
+          if (this.isExistingEmail) {
+            this.attemptedEmail = this.email;
+          }
           this.$v.email.$reset();
         }
         if (_.has(this.signUpResponse, 'message.usernameExists')) {
           this.isExistingUsername = this.signUpResponse.message.usernameExists;
-          this.attemptedUsername = this.username;
+          if (this.isExistingUsername) {
+            this.attemptedUsername = this.username;
+          }
           this.$v.username.$reset();
         }
       },
