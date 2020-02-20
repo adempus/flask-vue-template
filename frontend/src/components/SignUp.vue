@@ -1,6 +1,8 @@
 <template>
   <b-container class="form-width mt-5">
     <div>
+      <p>sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>
+      <p>sign up response: {{ this.signUpResponse }}</p>
       <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
         <h4>Sign Up</h4>
       </b-card-header>
@@ -93,7 +95,7 @@
               * Must be 3 or more characters
             </b-form-invalid-feedback>
           <!-- username name exsits feedback -->
-          <b-form-invalid-feedback v-if="submitClicked && !this.$v.username.$dirty"
+          <b-form-invalid-feedback v-if="submitClicked && !this.$v.email.usernameUnique"
             align="left"
             :state="this.$v.username.usernameUnique"
             id="username-input-feedback">
@@ -124,7 +126,7 @@
             * Email is required
           </b-form-invalid-feedback>
           <!-- exsiting email feedback -->
-          <b-form-invalid-feedback v-if="submitClicked && !this.$v.email.$dirty"
+          <b-form-invalid-feedback v-if="submitClicked && !this.$v.email.emailUnique"
             align="left"
             :state="this.$v.email.emailUnique"
             id="email-input-feedback">
@@ -204,8 +206,8 @@
   import Vue from 'vue';
   import { helpers, required, minLength, sameAs, email } from 'vuelidate/lib/validators';
 
-  const emailUnique = (value, vm) => !vm.isExistingEmail && !vm.email.$dirty;
-  const usernameUnique = (value, vm) => !vm.isExistingUsername && !vm.username.$dirty;
+  const emailUnique = (value, vm) => !vm.isExistingEmail && value !== vm.attemptedEmail;
+  const usernameUnique = (value, vm) => !vm.isExistingUsername && value !== vm.attemptedUsername;
 
   export default {
     name: 'SignUp',
@@ -217,6 +219,9 @@
       username: '',
       password: '',
       checkedPassword: '',
+      signUpForm: {
+
+      },
       submitClicked: false,
       signUpSuccess: false,
       isExistingEmail: false,
