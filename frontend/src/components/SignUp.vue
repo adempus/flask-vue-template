@@ -1,8 +1,8 @@
 <template>
   <b-container class="form-width mt-5">
     <div>
-      <p>sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>
-      <p>sign up response: {{ this.signUpResponse }}</p>
+<!--      <p>sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>-->
+<!--      <p>sign up response: {{ this.signUpResponse }}</p>-->
       <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
         <h4>Sign Up</h4>
       </b-card-header>
@@ -193,7 +193,7 @@
           <b-button type="submit" block variant="info">Submit</b-button>
         </b-row>
         <b-row class="float-right">
-          <b-link href="#" class="pt-3 mr-4 sign-in-link">
+          <b-link href="/sign-in" class="pt-3 mr-4 sign-in-link">
             Already a user? Sign in
             <b-icon-chevron-right></b-icon-chevron-right>
           </b-link>

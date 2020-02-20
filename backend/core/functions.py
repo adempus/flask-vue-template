@@ -32,6 +32,10 @@ def registerUser(user):
         return {'error': True, 'message': 'invalid payload'}
 
 
+def signInUser(user):
+    pass
+
+
 def getHashedPass(password):
     salt = bcrypt.gensalt()
     return bcrypt.hashpw(password.encode(), salt)

@@ -1,4 +1,4 @@
-from core import db, registerUser
+from core import db, registerUser, signInUser
 from core import getDBCredentials
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -39,16 +39,18 @@ def testRoute():
 @app.route('/sign-up', methods=['GET', 'POST'])
 def signUp():
     if request.method == 'POST':
-        signUpInfo = dict(request.get_json())
-        print(f"signUpData: \n{signUpInfo}")
-        resPayload = registerUser(signUpInfo)
+        signUpData = dict(request.get_json())
+        print(f"sign-up data: \n{signUpData}")
+        resPayload = registerUser(signUpData)
         return jsonify(resPayload)
 
 
 @app.route('/sign-in', methods=['GET'])
 def signIn():
+    signInData = { 'email':  request.args.get('email'), 'password': request.args.get('password') }
+    print(f"sign-in data: \n{signInData}")
+    return jsonify({"error": False, "message": "Sign-in endpoint hit"})
     pass
-
 
 
 if __name__ == '__main__':
