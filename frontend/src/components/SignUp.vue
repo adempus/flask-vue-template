@@ -24,7 +24,7 @@
                 :state="validateState('firstName')"
                 trim
               ></b-form-input>
-              <!-- first name invalid feedback -->
+<!--               first name invalid feedback-->
               <div v-if="!this.$v.firstName.required && submitClicked">
                 <b-form-invalid-feedback
                   align="left"
@@ -73,6 +73,7 @@
             id="user-name"
             v-model="username"
             placeholder="Enter a username"
+            @input="modifyUsername()"
             :state="validateState('username')"
             aria-describedby="username-input-feedback"
             trim
@@ -92,8 +93,9 @@
               * Must be 3 or more characters
             </b-form-invalid-feedback>
           <!-- username name exsits feedback -->
-          <b-form-invalid-feedback
+          <b-form-invalid-feedback v-if="submitClicked && !this.$v.username.$dirty"
             align="left"
+            :state="this.$v.username.usernameUnique"
             id="username-input-feedback">
             * This username is already in use
           </b-form-invalid-feedback>
@@ -110,6 +112,7 @@
             v-model="email"
             placeholder="useremail@domain.com"
             aria-describedby="email-input-feedback"
+            @input="modifyEmail()"
             :state="validateState('email')"
             trim
           ></b-form-input>
@@ -119,6 +122,13 @@
             :state="this.$v.email.required"
             id="email-input-feedback">
             * Email is required
+          </b-form-invalid-feedback>
+          <!-- exsiting email feedback -->
+          <b-form-invalid-feedback v-if="submitClicked && !this.$v.email.$dirty"
+            align="left"
+            :state="this.$v.email.emailUnique"
+            id="email-input-feedback">
+            * This email is already in use
           </b-form-invalid-feedback>
         </b-form-group>
         <b-row>
@@ -190,10 +200,16 @@
 
 <script>
   import axios from 'axios';
-  import { _ } from 'lodash';
-  import { required, minLength, sameAs } from 'vuelidate/lib/validators';
+  import _ from 'lodash';
+  import Vue from 'vue';
+  import { helpers, required, minLength, sameAs, email } from 'vuelidate/lib/validators';
+
+  const emailUnique = (value, vm) => !vm.isExistingEmail && !vm.email.$dirty;
+  const usernameUnique = (value, vm) => !vm.isExistingUsername && !vm.username.$dirty;
 
   export default {
+    name: 'SignUp',
+
     data: () => ({
       firstName: '',
       lastName: '',
@@ -203,6 +219,10 @@
       checkedPassword: '',
       submitClicked: false,
       signUpSuccess: false,
+      isExistingEmail: false,
+      attemptedEmail: '',
+      attemptedUsername: '',
+      isExistingUsername: false,
       signUpResponse: null,
     }),
 
@@ -216,11 +236,12 @@
       username: {
         required,
         minLength: minLength(3),
-        // exists: this.usernameExists(),
+        usernameUnique,
       },
       email: {
         required,
-        // exists: existingEmail,
+        email,
+        emailUnique,
       },
       password: {
         required,
@@ -237,6 +258,34 @@
         const { $dirty, $error } = this.$v[value];
         return $dirty ? !$error : null;
       },
+      modifyUsername() {
+        this.$v.username.$touch();
+        if (this.$v.username.$invalid) {
+          if (this.attemptedUsername.toLowerCase() !== this.username.toLowerCase()) {
+            this.isExistingUsername = false;
+          }
+        }
+      },
+      modifyEmail() {
+        this.$v.email.$touch();
+        if (this.$v.email.$invalid) {
+          if (this.attemptedEmail.toLowerCase() !== this.email.toLowerCase()) {
+            this.isExistingEmail = false;
+          }
+        }
+      },
+      determineError() {
+        if (_.has(this.signUpResponse, 'message.emailExists')) {
+          this.isExistingEmail = this.signUpResponse.message.emailExists;
+          this.attemptedEmail = this.email;
+          this.$v.email.$reset();
+        }
+        if (_.has(this.signUpResponse, 'message.usernameExists')) {
+          this.isExistingUsername = this.signUpResponse.message.usernameExists;
+          this.attemptedUsername = this.username;
+          this.$v.username.$reset();
+        }
+      },
       requestUserSignUp() {
         const endpoint = 'http://localhost:5000/sign-up';
         return axios.post(endpoint, {
@@ -249,14 +298,16 @@
       },
       submit() {
         this.submitClicked = true;
+        this.$v.$touch();
         if (this.$v.$invalid) {
           console.log('Invalid credentials provided');
         } else {
           this.requestUserSignUp().then((response) => {
             console.log('response:', response);
             this.signUpResponse = response.data;
-            if (response.error === true) {
+            if (this.signUpResponse.error === true) {
               this.signUpSuccess = false;
+              this.determineError();
             } else {
               this.signUpSuccess = true;
             }
@@ -267,28 +318,7 @@
           });
         }
       },
-
     },
-    computed: {
-      // emailExists() {
-      //   if (this.submitClicked) {
-      //     if (_.has(this.signUpResponse, 'message')) {
-      //       return _.has(this.signUpResponse.message, 'emailExists')
-      //         ? this.signUpResponse.message.emailExists : false;
-      //     }
-      //   }
-      //   return false;
-      // },
-      // usernameExists() {
-      //   if (this.submitClicked) {
-      //     if (_.has(this.signUpResponse, 'message')) {
-      //       return _.has(this.signUpResponse.message, 'usernameExists')
-      //         ? this.signUpResponse.message.usernameExists : false;
-      //     }
-      //   }
-      //   return false;
-      // },
-    }
   };
 </script>
 

@@ -54,7 +54,8 @@
       "no-console": "off",
       "no-unused-vars": "off",
       "vue/no-unused-vars": "off",
-      "comma-dangle": "off"
+      "comma-dangle": "off",
+      "object-curly-newline": "off"
     }
   },
   "browserslist": [
