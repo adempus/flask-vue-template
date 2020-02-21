@@ -39,7 +39,7 @@ def testRoute():
 def signUp():
     if request.method == 'POST':
         signUpData = dict(request.get_json())
-        print(f"sign-up data: \n{signUpData}")
+        # print(f"sign-up data: \n{signUpData}")
         resPayload = signUpUser(signUpData)
         return jsonify(resPayload)
 
@@ -48,7 +48,7 @@ def signUp():
 def signIn():
     if request.method == 'POST':
         signInData = dict(request.get_json())
-        print(f"sign-in data: \n{signInData}")
+        # print(f"sign-in data: \n{signInData}")
         resPayload = signInUser(signInData)
         return jsonify(resPayload)
 

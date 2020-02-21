@@ -44,20 +44,13 @@ def signInUser(user):
             return { 'error': True, 'message': signInError }
         else:
             savedPassword = userQuery.password
-            print(f"saved password: {savedPassword}")
-            print(f"saved password type: {type(savedPassword)}")
-            print(f"password: {password}")
-            print(f"password type: {type(password)}")
-            password = password.encode('utf-8')
-            print(f"post convert:")
-            print(f"password: {password}")
-            print(f"password type: {type(password)}")
-            match = bcrypt.hashpw(password, salt=savedPassword) == savedPassword
+            match = bcrypt.checkpw(password.encode(), savedPassword.encode())
             if not match:
                 signInError['passwordInvalid'] = not match
                 return { 'error': True, 'message': signInError }
             else:
-                return { 'error': False, 'message': signInError, 'user': userQuery }
+                print(f"user signed in with id: {userQuery.id}")
+                return { 'error': False, 'message': signInError, 'user': { 'id': userQuery.id } }
 
 
 def getHashedPass(password):

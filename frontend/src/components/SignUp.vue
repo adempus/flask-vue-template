@@ -192,8 +192,8 @@
         <b-row class="justify-content-end mt-4 pl-3 pr-3">
           <b-button type="submit" block variant="info">Submit</b-button>
         </b-row>
-        <b-row class="float-right">
-          <b-link href="/sign-in" class="pt-3 mr-4 sign-in-link">
+        <b-row>
+          <b-link href="/sign-in" class="pt-3 mr-4 mb-n2 sign-in-link mx-auto">
             Already a user? Sign in
             <b-icon-chevron-right></b-icon-chevron-right>
           </b-link>
@@ -349,5 +349,11 @@
   .sign-in-link {
     font-size: 0.75em;
     color: #343A40;
+  }
+
+  @media (max-width: 1320px) {
+    .form-width {
+      width: 100vw;
+    }
   }
 </style>

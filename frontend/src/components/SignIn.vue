@@ -4,24 +4,26 @@
       <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
         <h4>Sign In</h4>
       </b-card-header>
-      <b-card class="text-center">
+      <b-card class="text-center px-4 pt-2">
         <b-form @submit.prevent="signIn">
+          <!-- email field -->
           <b-row>
-            <!-- email field -->
             <b-form-group
               id="emailGroup"
               label="Email:"
               label-for="email"
-              label-cols="2"
-              class="input-label-text w-100 m-3">
+              label-cols="true"
+              label-align="left"
+              class="input-label-text w-100">
               <b-form-input
                 id="email"
                 v-model="email"
-                placeholder="John"
+                placeholder="email@domain.com"
                 aria-describedby="email-input-feedback"
                 :state="validateState('email')"
                 trim>
               </b-form-input>
+              <!-- required email error feedback -->
               <b-form-invalid-feedback
                 v-if="!this.$v.email.email || !this.$v.email.required && signInState.requested"
                 align="left"
@@ -29,17 +31,26 @@
                 id="email-input-feedback">
                 {{ !this.$v.email.email ? '* Email is invalid' : '* Email is required ' }}
               </b-form-invalid-feedback>
+              <!-- email not found error feedback  -->
+              <b-form-invalid-feedback
+                v-if="this.$v.email.email && this.$v.email.required && signInState.requested"
+                align="left"
+                :state="this.$v.email.emailNotFound"
+                id="email-input-feedback">
+                * No user found with this email. Try again.
+              </b-form-invalid-feedback>
             </b-form-group>
           </b-row>
 
+          <!-- password field -->
           <b-row>
-            <!-- password field -->
             <b-form-group
               id="passwordGroup"
               label="Password:"
               label-for="password"
-              label-cols="2"
-              class="input-label-text w-100 m-3">
+              label-cols="true"
+              label-align="left"
+              class="input-label-text w-100">
               <b-form-input
                 id="password"
                 v-model="password"
@@ -50,11 +61,20 @@
                 trim>
               </b-form-input>
               <!-- password required feedback -->
-              <b-form-invalid-feedback v-if="!this.$v.password.required && signInState.requested"
+              <b-form-invalid-feedback
+                v-if="!this.$v.password.required && signInState.requested"
                 align="left"
                 :state="this.$v.password.required"
                 id="password-input-feedback">
                 * Password is required
+              </b-form-invalid-feedback>
+              <!-- incorrect password feedback -->
+              <b-form-invalid-feedback
+                v-if="this.$v.password.required && signInState.requested"
+                align="left"
+                :state="this.$v.password.incorrectPassword"
+                id="password-input-feedback">
+                * Incorrect password, try again.
               </b-form-invalid-feedback>
             </b-form-group>
           </b-row>
@@ -65,12 +85,17 @@
         </b-form>
       </b-card>
     </div>
+    <p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>
+    <p>sign in response: {{ this.signInState.response }}</p>
   </b-container>
 </template>
 
 <script>
   import axios from 'axios';
   import { required, email } from 'vuelidate/lib/validators';
+
+  const emailNotFound = (value, vm) => !vm.signInState.invalidEmail;
+  const incorrectPassword = (value, vm) => !vm.signInState.invalidPassword;
 
   export default {
     name: 'SignIn',
@@ -81,23 +106,23 @@
         signInState: {
           requested: false,
           success: false,
-          response: null,
+          response: { error: false, message: null },
           invalidEmail: false,
           invalidPassword: false,
+          attemptedEmail: '',
+          attemptedPassword: '',
         }
       };
     },
     validations: {
-      // errors:
-       // No user found with this email. Try again.
-      // No user found with this email.
-      // Incorrect password. Try again.
       email: {
         required,
-        email
+        email,
+        emailNotFound
       },
       password: {
-        required
+        required,
+        incorrectPassword
       },
     },
     methods: {
@@ -113,21 +138,17 @@
         } else {
           this.requestUserSignIn()
             .then((response) => {
-              // this.signInResponse = response.data;
               this.$set(this.signInState, 'response', response.data);
               console.log('sign in response: ', response.data);
-              if (this.signInState.response.error === true) {
+              if (this.signInState.response.error) {
+                this.$set(this.signInState, 'attemptedEmail', this.email);
+                this.$set(this.signInState, 'attemptedPassword', this.password);
                 this.setSignInState();
-                // if (this.signInState.response.message.userNotFound === true) {
-                //   this.signInState.invalidEmail = true;
-                // } else if (this.signInState.response.message.passwordInvalid === true) {
-                //   this.signInState.invalidPassword = true;
-                // }
               } else {
                 this.$set(this.signInState, 'success', true);
                 this.setSignInState();
               }
-          });
+            });
         }
       },
       requestUserSignIn() {
@@ -139,23 +160,62 @@
       },
       setSignInState() {
         this.$set(
-          this.signInState, 'invalidEmail', this.signInState.response.message.userNotFound
+          this.signInState,
+          'invalidEmail',
+          this.signInState.response.message.userNotFound
         );
         this.$set(
-          this.signInState, 'invalidPassword',
+          this.signInState,
+          'invalidPassword',
           this.signInState.response.message.passwordInvalid
         );
       }
     },
+    watch: {
+      email() {
+        console.log('Email input has been changed: ');
+        if (this.signInState.response.error) {
+          if (this.signInState.response.message.userNotFound) {
+            this.$set(
+              this.signInState,
+              'invalidEmail',
+              this.signInState.attemptedEmail.toUpperCase() === this.email.toUpperCase()
+            );
+          }
+        }
+      },
+      password() {
+        if (this.signInState.response.error) {
+          if (this.signInState.response.message.passwordInvalid) {
+            this.$set(
+              this.signInState,
+              'invalidPassword',
+              this.signInState.attemptedPassword === this.password
+            );
+          }
+        }
+      }
+    }
   };
 </script>
 
 <style scoped>
   .form-width {
-    width: 30vw;
+    width: 25vw;
   }
 
   .input-label-text {
     font-size: 0.9em;
+  }
+
+  @media (max-width: 1024px) {
+    .form-width {
+      width: 50vw;
+    }
+  }
+  @media (max-width: 750px) {
+    .form-width {
+      width: 90vw;
+    }
   }
 </style>
