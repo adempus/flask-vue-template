@@ -9,7 +9,7 @@ def getDBCredentials():
     return f"{data['driver']}://{data['user']}:{data['password']}@{data['host']}:{data['port']}/{data['db']}"
 
 
-def registerUser(user):
+def signUpUser(user):
     if None not in user.values():
         firstName, lastName, username = user['firstName'], user['lastName'], user['userName']
         email, password = user['email'], user['password']
@@ -33,7 +33,31 @@ def registerUser(user):
 
 
 def signInUser(user):
-    pass
+    if None not in user.values():
+        email, password = user['email'], user['password']
+        userQuery = User.query.filter_by(email=email).first()
+        signInError = {
+            'userNotFound': userQuery is None,
+            'passwordInvalid': False
+        }
+        if True in signInError.values():
+            return { 'error': True, 'message': signInError }
+        else:
+            savedPassword = userQuery.password
+            print(f"saved password: {savedPassword}")
+            print(f"saved password type: {type(savedPassword)}")
+            print(f"password: {password}")
+            print(f"password type: {type(password)}")
+            password = password.encode('utf-8')
+            print(f"post convert:")
+            print(f"password: {password}")
+            print(f"password type: {type(password)}")
+            match = bcrypt.hashpw(password, salt=savedPassword) == savedPassword
+            if not match:
+                signInError['passwordInvalid'] = not match
+                return { 'error': True, 'message': signInError }
+            else:
+                return { 'error': False, 'message': signInError, 'user': userQuery }
 
 
 def getHashedPass(password):

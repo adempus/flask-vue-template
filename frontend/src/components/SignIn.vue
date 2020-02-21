@@ -22,11 +22,12 @@
                 :state="validateState('email')"
                 trim>
               </b-form-input>
-              <b-form-invalid-feedback v-if="!this.$v.email.required && signInClicked"
+              <b-form-invalid-feedback
+                v-if="!this.$v.email.email || !this.$v.email.required && signInState.requested"
                 align="left"
                 :state="this.$v.email.required"
                 id="email-input-feedback">
-                * Email is required
+                {{ !this.$v.email.email ? '* Email is invalid' : '* Email is required ' }}
               </b-form-invalid-feedback>
             </b-form-group>
           </b-row>
@@ -49,7 +50,7 @@
                 trim>
               </b-form-input>
               <!-- password required feedback -->
-              <b-form-invalid-feedback v-if="!this.$v.password.required && signInClicked"
+              <b-form-invalid-feedback v-if="!this.$v.password.required && signInState.requested"
                 align="left"
                 :state="this.$v.password.required"
                 id="password-input-feedback">
@@ -77,12 +78,20 @@
       return {
         email: '',
         password: '',
-        signInResponse: null,
-        signInClicked: false,
-        signInSuccess: false,
+        signInState: {
+          requested: false,
+          success: false,
+          response: null,
+          invalidEmail: false,
+          invalidPassword: false,
+        }
       };
     },
     validations: {
+      // errors:
+       // No user found with this email. Try again.
+      // No user found with this email.
+      // Incorrect password. Try again.
       email: {
         required,
         email
@@ -96,32 +105,47 @@
         const { $dirty, $error } = this.$v[value];
         return $dirty ? !$error : null;
       },
-      signIn() {
-        this.signInClicked = true;
+      async signIn() {
+        this.$set(this.signInState, 'requested', true);
         this.$v.$touch();
         if (this.$v.$invalid) {
           console.log('invalid sign-in credentials provided.');
         } else {
-          this.requestUserSignIn().then((response) => {
-            this.signInResponse = response.data;
-            console.log('sign in response: ', this.signInResponse);
-            if (this.signInResponse.error === true) {
-              this.signInSuccess = false;
-            } else {
-              this.signInSuccess = true;
-            }
+          this.requestUserSignIn()
+            .then((response) => {
+              // this.signInResponse = response.data;
+              this.$set(this.signInState, 'response', response.data);
+              console.log('sign in response: ', response.data);
+              if (this.signInState.response.error === true) {
+                this.setSignInState();
+                // if (this.signInState.response.message.userNotFound === true) {
+                //   this.signInState.invalidEmail = true;
+                // } else if (this.signInState.response.message.passwordInvalid === true) {
+                //   this.signInState.invalidPassword = true;
+                // }
+              } else {
+                this.$set(this.signInState, 'success', true);
+                this.setSignInState();
+              }
           });
         }
       },
       requestUserSignIn() {
         const endpoint = 'http://localhost:5000/sign-in';
-        return axios.get(endpoint, {
-          params: {
-            email: this.email,
-            password: this.password
-          }
+        return axios.post(endpoint, {
+          email: this.email,
+          password: this.password,
         });
       },
+      setSignInState() {
+        this.$set(
+          this.signInState, 'invalidEmail', this.signInState.response.message.userNotFound
+        );
+        this.$set(
+          this.signInState, 'invalidPassword',
+          this.signInState.response.message.passwordInvalid
+        );
+      }
     },
   };
 </script>

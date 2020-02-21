@@ -1,9 +1,8 @@
-from core import db, registerUser, signInUser
+from core import db, signUpUser, signInUser
 from core import getDBCredentials
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_migrate import Migrate
-# import bcrypt
 
 DEBUG = True
 
@@ -41,16 +40,17 @@ def signUp():
     if request.method == 'POST':
         signUpData = dict(request.get_json())
         print(f"sign-up data: \n{signUpData}")
-        resPayload = registerUser(signUpData)
+        resPayload = signUpUser(signUpData)
         return jsonify(resPayload)
 
 
-@app.route('/sign-in', methods=['GET'])
+@app.route('/sign-in', methods=['GET', 'POST'])
 def signIn():
-    signInData = { 'email':  request.args.get('email'), 'password': request.args.get('password') }
-    print(f"sign-in data: \n{signInData}")
-    return jsonify({"error": False, "message": "Sign-in endpoint hit"})
-    pass
+    if request.method == 'POST':
+        signInData = dict(request.get_json())
+        print(f"sign-in data: \n{signInData}")
+        resPayload = signInUser(signInData)
+        return jsonify(resPayload)
 
 
 if __name__ == '__main__':
