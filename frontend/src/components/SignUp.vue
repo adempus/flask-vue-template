@@ -193,10 +193,10 @@
           <b-button type="submit" block variant="info">Submit</b-button>
         </b-row>
         <b-row>
-          <b-link href="/sign-in" class="pt-3 mr-4 mb-n2 sign-in-link mx-auto">
+          <router-link to="/sign-in" class="pt-3 mr-4 mb-n2 sign-in-link mx-auto">
             Already a user? Sign in
             <b-icon-chevron-right></b-icon-chevron-right>
-          </b-link>
+          </router-link>
         </b-row>
       </b-form>
       </b-card>

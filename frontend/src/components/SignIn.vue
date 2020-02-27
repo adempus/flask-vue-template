@@ -79,8 +79,14 @@
             </b-form-group>
           </b-row>
           <!-- Submit button -->
-          <b-row class="justify-content-center mt-4 pl-3 pr-3">
+          <b-row class="justify-content-center mt-3 pl-3 pr-3">
             <b-button type="submit" variant="info">Sign In</b-button>
+          </b-row>
+          <b-row>
+            <router-link to="/sign-up" class="pt-3 mr-4 mb-n2 sign-up-link mx-auto">
+              Don't have an account? Sign Up
+              <b-icon-chevron-right></b-icon-chevron-right>
+            </router-link>
           </b-row>
         </b-form>
       </b-card>
@@ -207,7 +213,10 @@
   .input-label-text {
     font-size: 0.9em;
   }
-
+  .sign-up-link {
+    font-size: 0.75em;
+    color: #343A40;
+  }
   @media (max-width: 1024px) {
     .form-width {
       width: 50vw;
