@@ -1,11 +1,10 @@
 <template>
   <b-container class="form-width mt-5">
     <div>
-
       <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
         <h4>Sign Up</h4>
       </b-card-header>
-      <b-card class="text-center">
+      <b-card class="text-center shadow-sm rounded">
       <b-form @submit.prevent="submit">
         <b-row>
           <!-- First name-->
@@ -200,8 +199,8 @@
       </b-form>
       </b-card>
     </div>
-    <p class="mt-4">sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>
-    <p>sign up response: {{ this.signUpResponse }}</p>
+<!--    <p class="mt-4">sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>-->
+<!--    <p>sign up response: {{ this.signUpResponse }}</p>-->
   </b-container>
 </template>
 
@@ -354,7 +353,7 @@
 
   .sign-in-link {
     font-size: 0.75em;
-    color: #343A40;
+    color: #707579;
   }
 
   @media (max-width: 1320px) {

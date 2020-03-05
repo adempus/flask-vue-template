@@ -4,7 +4,7 @@
       <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
         <h4>Sign In</h4>
       </b-card-header>
-      <b-card class="text-center px-4 pt-2">
+      <b-card class="text-center px-4 pt-2 shadow-sm rounded">
         <b-form @submit.prevent="signIn">
           <!-- email field -->
           <b-row>
@@ -91,10 +91,11 @@
         </b-form>
       </b-card>
     </div>
-      <p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>
-      <p class="text-break">
-        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}
-      </p>
+<!--
+<p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>-->
+<!--      <p class="text-break">-->
+<!--        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}-->
+<!--      </p>-->
   </b-container>
 </template>
 
@@ -216,7 +217,7 @@
   }
   .sign-up-link {
     font-size: 0.75em;
-    color: #343A40;
+    color: #707579;
   }
   @media (max-width: 1024px) {
     .form-width {

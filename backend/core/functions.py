@@ -1,4 +1,3 @@
-import os
 import json
 import bcrypt
 import jwt
@@ -61,11 +60,7 @@ def signInUser(user, appKey):
                 return { 'error': True, 'message': signInErrors }
             else:
                 sessionToken = generateSessionToken({'user': getSignInPayload(userQuery)}, appKey)
-                return {
-                    'error': False,
-                    'message': signInErrors,
-                    'user': { 'id': userQuery.id, 'data': sessionToken.decode('UTF-8') }
-                }
+                return { 'error': False, 'data': sessionToken.decode('UTF-8') }
 
 
 def getSignInPayload(query):
@@ -95,7 +90,8 @@ def decodeSessionToken(app):
             data['error'] = False
             return data
         except jwt.InvalidTokenError as err:
-            return { 'error': True, 'message': 'Invalid session token provided.' }
+            print(f"Error: {err}")
+            return { 'error': True, 'message': f'Invalid session token provided. ({err}).' }
 
 
 def requireAuthentication(app):
@@ -109,9 +105,8 @@ def requireAuthentication(app):
                 jwt.decode(token, app.secret_key, algorithms=['HS256'])
             except jwt.InvalidTokenError as err:
                 print(f"error: {err}")
-                return { 'error': True, 'message': 'Invalid session token provided.' }
+                return { 'error': True, 'message': f'Invalid session token provided. ({err}).' }
             return funct(*args, **kwargs)
         return authWrapper
     return authDecorator
-
 
