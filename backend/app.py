@@ -1,5 +1,4 @@
-from core import db, signUpUser, signInUser
-from core import getDBCredentials
+from core import db, signUpUser, signInUser, getAppKey, getDBCredentials, requireAuthentication, decodeSessionToken
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -12,7 +11,8 @@ def create_app():
     # CORS setup
     CORS(appInstance, resources={r'/*': {'origins': '*'}})
     appInstance.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    appInstance.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials()
+    appInstance.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials('db_credentials.json')
+    appInstance.config['SECRET_KEY'] = getAppKey('app_key.json')
     return appInstance
 
 
@@ -35,11 +35,17 @@ def testRoute():
     return jsonify({'td1': 'first', 'td2': 'second', 'td3': 'third', 'td4': 'fourth', 'td5': 'fifth'})
 
 
+@app.route('/protected-route', methods=['GET'])
+@requireAuthentication(app)
+def protectedTestRoute():
+    data = decodeSessionToken(app)
+    return jsonify(data)
+
+
 @app.route('/sign-up', methods=['GET', 'POST'])
 def signUp():
     if request.method == 'POST':
         signUpData = dict(request.get_json())
-        # print(f"sign-up data: \n{signUpData}")
         resPayload = signUpUser(signUpData)
         return jsonify(resPayload)
 
@@ -48,11 +54,9 @@ def signUp():
 def signIn():
     if request.method == 'POST':
         signInData = dict(request.get_json())
-        # print(f"sign-in data: \n{signInData}")
-        resPayload = signInUser(signInData)
+        resPayload = signInUser(signInData, app.config['SECRET_KEY'])
         return jsonify(resPayload)
 
 
 if __name__ == '__main__':
-    app.run()
-
+    app.run(debug=True)

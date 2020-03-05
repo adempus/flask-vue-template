@@ -1,8 +1,7 @@
 <template>
   <b-container class="form-width mt-5">
     <div>
-<!--      <p>sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>-->
-<!--      <p>sign up response: {{ this.signUpResponse }}</p>-->
+
       <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
         <h4>Sign Up</h4>
       </b-card-header>
@@ -201,13 +200,14 @@
       </b-form>
       </b-card>
     </div>
+    <p class="mt-4">sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>
+    <p>sign up response: {{ this.signUpResponse }}</p>
   </b-container>
 </template>
 
 <script>
   import axios from 'axios';
   import _ from 'lodash';
-  import Vue from 'vue';
   import { required, minLength, sameAs, email } from 'vuelidate/lib/validators';
 
   const emailUnique = (value, vm) => !vm.isExistingEmail
@@ -225,8 +225,14 @@
       username: '',
       password: '',
       checkedPassword: '',
-      signUpForm: {
-
+      signUpState: {
+        requested: false,
+        success: false,
+        response: { error: false, message: null },
+        isExistingEmail: false,
+        isExistingUsername: false,
+        attemptedEmail: '',
+        attemptedUsername: '',
       },
       submitClicked: false,
       signUpSuccess: false,
