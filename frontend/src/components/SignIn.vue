@@ -37,7 +37,7 @@
                 align="left"
                 :state="this.$v.email.emailNotFound"
                 id="email-input-feedback">
-                * No user found with this email. Try again.
+                * There is no user with this email. Try again.
               </b-form-invalid-feedback>
             </b-form-group>
           </b-row>
@@ -91,8 +91,10 @@
         </b-form>
       </b-card>
     </div>
-    <p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>
-    <p>sign in response: {{ this.signInState.response }}</p>
+      <p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>
+      <p class="text-break">
+        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}
+      </p>
   </b-container>
 </template>
 
@@ -149,11 +151,10 @@
               if (this.signInState.response.error) {
                 this.$set(this.signInState, 'attemptedEmail', this.email);
                 this.$set(this.signInState, 'attemptedPassword', this.password);
-                this.setSignInState();
               } else {
                 this.$set(this.signInState, 'success', true);
-                this.setSignInState();
               }
+              this.setSignInState();
             });
         }
       },
