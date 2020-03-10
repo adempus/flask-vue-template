@@ -50,13 +50,12 @@ def signInUser(user, appKey):
             'userNotFound': userQuery is None,
             'passwordInvalid': False
         }
-        if True in signInErrors.values():
+        if signInErrors['userNotFound']:
             return { 'error': True, 'message': signInErrors }
         else:
             savedPassword = userQuery.password
-            match = bcrypt.checkpw(password.encode(), savedPassword.encode())
-            if not match:
-                signInErrors['passwordInvalid'] = not match
+            signInErrors['passwordInvalid'] = not bcrypt.checkpw(password.encode(), savedPassword.encode())
+            if signInErrors['passwordInvalid']:
                 return { 'error': True, 'message': signInErrors }
             else:
                 sessionToken = generateSessionToken({'user': getSignInPayload(userQuery)}, appKey)

@@ -91,11 +91,11 @@
         </b-form>
       </b-card>
     </div>
-<!--
-<p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>-->
-<!--      <p class="text-break">-->
-<!--        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}-->
-<!--      </p>-->
+<!-- debug messages -->
+<p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>
+      <p class="text-break">
+        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}
+      </p>
   </b-container>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <b-container class="form-width mt-5">
+  <b-container class="form-width mt-5 mb-0 pb-0">
     <div>
       <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
         <h4>Sign Up</h4>
@@ -199,8 +199,8 @@
       </b-form>
       </b-card>
     </div>
-<!--    <p class="mt-4">sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>-->
-<!--    <p>sign up response: {{ this.signUpResponse }}</p>-->
+    <p class="mt-4">sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>
+    <p>sign up response: {{ this.signUpResponse }}</p>
   </b-container>
 </template>
 

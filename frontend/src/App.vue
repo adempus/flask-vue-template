@@ -1,13 +1,45 @@
+<!-- This is the entry point for the different components to be shown -->
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/test-page">Test Page</router-link> |
-      <router-link to="/sign-up">Sign Up</router-link> |
-      <router-link to="/sign-in">Sign In</router-link>
-      <!--      <router-link to="/about">About</router-link>-->
+    <div>
+      <b-container fluid class="p-0 m-0">
+        <b-card title="Home Title" no-body>
+          <b-card-header header-tag="nav">
+            <b-nav card-header pills  class="pl-3 w-25">
+              <b-row>
+                <b-nav-item to="/" exact exact-active-class="active">Home</b-nav-item>
+                <b-nav-item to="/test-page" exact exact-active-class="active">Test Page</b-nav-item>
+<!--              <b-nav tabs align="right">-->
+                <b-nav-item to="/sign-in" exact exact-active-class="active">Sign In</b-nav-item>
+                <b-nav-item to="/sign-up" exact exact-active-class="active">Sign Up</b-nav-item>
+<!--              </b-nav>-->
+              </b-row>
+
+<!--              <b-row align-h="start" class="w-100">-->
+<!--                  <b-nav-item to="/" exact exact-active-class="active">Home</b-nav-item>-->
+<!--                <b-nav-item to="/test-page" exact exact-active-class="active">-->
+<!--                  Test Page-->
+<!--                </b-nav-item>-->
+<!--                <b-col cols="9">-->
+<!--                </b-col>-->
+<!--                <b-row align-h="end" class="align-self-end ml-4">-->
+<!--&lt;!&ndash;                  <b-row>&ndash;&gt;-->
+<!--                    <b-nav-item to="/sign-in" exact exact-active-class="active">Sign In</b-nav-item>-->
+<!--                    <b-nav-item to="/sign-up" exact exact-active-class="active">Sign Up</b-nav-item>-->
+<!--&lt;!&ndash;                  </b-row>&ndash;&gt;-->
+<!--                </b-row>-->
+<!--              </b-row>-->
+              <!-- <b-nav-item to="/about" exact exact-active-class="active">About</b-nav-item>-->
+            </b-nav>
+
+          </b-card-header>
+          <b-card-body class="text-center vh-100">
+            <!-- corresponding templates for routes are injected into <router-view/> at runtime. -->
+            <router-view/>
+          </b-card-body>
+        </b-card>
+      </b-container>
     </div>
-    <router-view/>
   </div>
 </template>
 
@@ -20,6 +52,10 @@
     color: #2c3e50;
   }
 
+  .navColor {
+    /**/
+  }
+
   #nav {
     padding: 30px;
   }
@@ -29,7 +65,12 @@
     color: #2c3e50;
   }
 
+  .b-nav-item {
+    color: #42b983 !important;
+
+  }
+
   #nav a.router-link-exact-active {
-    color: #42b983;
+    color: #42b983 !important;
   }
 </style>
