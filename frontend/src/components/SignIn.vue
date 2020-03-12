@@ -1,10 +1,10 @@
 <template>
-  <b-container class="form-width mt-5">
+  <b-container class="form-width">
     <div>
       <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
         <h4>Sign In</h4>
       </b-card-header>
-      <b-card class="text-center px-4 pt-2 shadow-sm rounded">
+      <b-card class="text-center px-4 pt-2 shadow rounded">
         <b-form @submit.prevent="signIn">
           <!-- email field -->
           <b-row>
@@ -202,7 +202,20 @@
             );
           }
         }
-      }
+      },
+      signInState: {
+        handler: function (value) {
+          if (value.success) {
+            console.log('sign in success: ', value.success);
+            const token = this.signInState.response.token;
+            localStorage.setItem('token', token);
+            this.$router.push({
+              name: 'User', params: { userId: this.signInState.response.data.id }
+            });
+          }
+        },
+        deep: true
+      },
     }
   };
 </script>

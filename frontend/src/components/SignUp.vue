@@ -1,10 +1,10 @@
 <template>
-  <b-container class="form-width mt-5 mb-0 pb-0">
+  <b-container class="form-width">
     <div>
       <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
         <h4>Sign Up</h4>
       </b-card-header>
-      <b-card class="text-center shadow-sm rounded">
+      <b-card class="text-center shadow rounded mx-auto my-auto">
       <b-form @submit.prevent="submit">
         <b-row>
           <!-- First name-->
@@ -199,8 +199,11 @@
       </b-form>
       </b-card>
     </div>
-    <p class="mt-4">sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>
-    <p>sign up response: {{ this.signUpResponse }}</p>
+    <!-- debug message -->
+<!--    <div>-->
+<!--      <p class="mt-4">sign up status: {{ this.signUpSuccess ? "success" : "failed" }}</p>-->
+<!--      <p>sign up response: {{ this.signUpResponse }}</p>-->
+<!--    </div>-->
   </b-container>
 </template>
 
@@ -343,6 +346,10 @@
 </script>
 
 <style scoped>
+  body {
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
   .input-label-text {
     font-size: 0.9em;
   }
@@ -358,7 +365,14 @@
 
   @media (max-width: 1320px) {
     .form-width {
-      width: 100vw;
+      width: 95vw;
+    }
+  }
+
+  @media (max-width: 750px) {
+    .form-width {
+      width: 95vw;
+      margin-left: -3vw;
     }
   }
 </style>

@@ -56,7 +56,9 @@
       "vue/no-unused-vars": "off",
       "comma-dangle": "off",
       "object-curly-newline": "off",
-      "max-len": "off"
+      "max-len": "off",
+      "object-shorthand": "off",
+      "prefer-destructuring": "off"
     }
   },
   "browserslist": [

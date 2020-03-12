@@ -5,35 +5,15 @@
       <b-container fluid class="p-0 m-0">
         <b-card title="Home Title" no-body>
           <b-card-header header-tag="nav">
-            <b-nav card-header pills  class="pl-3 w-25">
-              <b-row>
-                <b-nav-item to="/" exact exact-active-class="active">Home</b-nav-item>
-                <b-nav-item to="/test-page" exact exact-active-class="active">Test Page</b-nav-item>
-<!--              <b-nav tabs align="right">-->
-                <b-nav-item to="/sign-in" exact exact-active-class="active">Sign In</b-nav-item>
-                <b-nav-item to="/sign-up" exact exact-active-class="active">Sign Up</b-nav-item>
-<!--              </b-nav>-->
-              </b-row>
-
-<!--              <b-row align-h="start" class="w-100">-->
-<!--                  <b-nav-item to="/" exact exact-active-class="active">Home</b-nav-item>-->
-<!--                <b-nav-item to="/test-page" exact exact-active-class="active">-->
-<!--                  Test Page-->
-<!--                </b-nav-item>-->
-<!--                <b-col cols="9">-->
-<!--                </b-col>-->
-<!--                <b-row align-h="end" class="align-self-end ml-4">-->
-<!--&lt;!&ndash;                  <b-row>&ndash;&gt;-->
-<!--                    <b-nav-item to="/sign-in" exact exact-active-class="active">Sign In</b-nav-item>-->
-<!--                    <b-nav-item to="/sign-up" exact exact-active-class="active">Sign Up</b-nav-item>-->
-<!--&lt;!&ndash;                  </b-row>&ndash;&gt;-->
-<!--                </b-row>-->
-<!--              </b-row>-->
-              <!-- <b-nav-item to="/about" exact exact-active-class="active">About</b-nav-item>-->
+            <b-nav card-header pills class="pl-3">
+              <b-nav-item to="/" exact exact-active-class="active">Home</b-nav-item>
+              <b-nav-item to="/test-page" exact exact-active-class="active">Test Page</b-nav-item>
+              <b-nav-item to="/sign-in" class="ml-auto" exact exact-active-class="active">Sign In</b-nav-item>
+<!--              <b-nav-item to="/sign-up" exact exact-active-class="active">Sign Up</b-nav-item>-->
             </b-nav>
 
           </b-card-header>
-          <b-card-body class="text-center vh-100">
+          <b-card-body class="text-center align-content-center vh-100 mt-5">
             <!-- corresponding templates for routes are injected into <router-view/> at runtime. -->
             <router-view/>
           </b-card-body>
@@ -67,7 +47,6 @@
 
   .b-nav-item {
     color: #42b983 !important;
-
   }
 
   #nav a.router-link-exact-active {

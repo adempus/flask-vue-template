@@ -22,6 +22,7 @@ app.app_context().push()
 db.init_app(app)
 migrate = Migrate(app, db)
 
+
 """ ***********  backend routes  ************* """
 
 
@@ -42,6 +43,13 @@ def protectedTestRoute():
     return jsonify(data)
 
 
+@app.route('/user-data', methods=['GET'])
+@requireAuthentication(app)
+def getUserData():
+    data = decodeSessionToken(app)
+    return jsonify(data)
+
+
 @app.route('/sign-up', methods=['GET', 'POST'])
 def signUp():
     if request.method == 'POST':
@@ -55,8 +63,9 @@ def signIn():
     if request.method == 'POST':
         signInData = dict(request.get_json())
         resPayload = signInUser(signInData, app.config['SECRET_KEY'])
-        return jsonify(resPayload)
+        return resPayload
 
 
+app.config['DEBUG'] = True
 if __name__ == '__main__':
     app.run(debug=True)

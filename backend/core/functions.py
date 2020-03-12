@@ -3,7 +3,7 @@ import bcrypt
 import jwt
 import datetime
 from functools import wraps
-from flask import request
+from flask import request, make_response
 from core import db, User
 
 
@@ -21,8 +21,7 @@ def getAppKey(path):
 
 def signUpUser(user):
     if None not in user.values():
-        firstName, lastName, username = user['firstName'], user['lastName'], user['userName']
-        email, password = user['email'], user['password']
+        email, username = user['email'], user['userName']
         emailQuery = User.query.filter_by(email=email).first()
         usernameQuery = User.query.filter_by(username=username).first()
         dbRecordConflict = {
@@ -33,6 +32,7 @@ def signUpUser(user):
             print(f"There is a record containing username, and/or email: {dbRecordConflict}")
             return { 'error': True, 'message': dbRecordConflict }
         else:
+            firstName, lastName, password = user['firstName'], user['lastName'], user['password']
             newUser = User(firstName, lastName, username, email, getHashedPass(password))
             db.session.add(newUser)
             db.session.commit()
@@ -59,7 +59,13 @@ def signInUser(user, appKey):
                 return { 'error': True, 'message': signInErrors }
             else:
                 sessionToken = generateSessionToken({'user': getSignInPayload(userQuery)}, appKey)
-                return { 'error': False, 'data': sessionToken.decode('UTF-8') }
+                res = make_response({
+                    'error': False,
+                    'token': sessionToken.decode('UTF-8'),
+                    'data': getSignInPayload(userQuery)
+                })
+                res.headers['Authorization'] = f'Bearer {sessionToken}'
+                return res
 
 
 def getSignInPayload(query):
@@ -82,7 +88,7 @@ def generateSessionToken(payload, appKey):
 
 
 def decodeSessionToken(app):
-    sessionToken = request.args.get('token')
+    sessionToken = getAuthToken()
     if sessionToken:
         try:
             data = jwt.decode(sessionToken, app.secret_key, algorithms=['HS256'])
@@ -97,7 +103,8 @@ def requireAuthentication(app):
     def authDecorator(funct):
         @wraps(funct)
         def authWrapper(*args, **kwargs):
-            token = request.args.get('token')
+            token = getAuthToken()
+            print(f'token from request headers: {token}')
             if not token:
                 return { 'error': True, 'message': 'No session token provided.' }
             try:
@@ -109,3 +116,9 @@ def requireAuthentication(app):
         return authWrapper
     return authDecorator
 
+
+def getAuthToken():
+    token = request.headers.get('Authorization')
+    if token:
+        return token.split(' ')[1]  # remove 'Bearer' part of token
+    return None
