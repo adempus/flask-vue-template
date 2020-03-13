@@ -96,7 +96,7 @@ def decodeSessionToken(app):
             return data
         except jwt.InvalidTokenError as err:
             print(f"Error: {err}")
-            return { 'error': True, 'message': f'Invalid session token provided. ({err}).' }
+            return { 'error': True, 'message': f'401 Unauthorized.\n Invalid session token provided. ({err}).' }
 
 
 def requireAuthentication(app):
@@ -111,7 +111,7 @@ def requireAuthentication(app):
                 jwt.decode(token, app.secret_key, algorithms=['HS256'])
             except jwt.InvalidTokenError as err:
                 print(f"error: {err}")
-                return { 'error': True, 'message': f'Invalid session token provided. ({err}).' }
+                return { 'error': True, 'message': f'401 Unauthorized.\n Invalid session token provided. ({err}).' }
             return funct(*args, **kwargs)
         return authWrapper
     return authDecorator

@@ -48,7 +48,10 @@ def protectedTestRoute():
 def userPage(userId):
     print(f'user id: {userId}')
     data = decodeSessionToken(app)
-    return jsonify(data)
+    if data['data']['user']['id'] == int(userId):
+        print("user ids match")
+        return jsonify(data)
+    return {'error': True, 'message': '401 Unauthorized. \nUser does not have permission to access this route.'}
 
 
 @app.route('/sign-up', methods=['GET', 'POST'])
