@@ -43,9 +43,10 @@ def protectedTestRoute():
     return jsonify(data)
 
 
-@app.route('/user-data', methods=['GET'])
+@app.route('/user/<userId>', methods=['GET'])
 @requireAuthentication(app)
-def getUserData():
+def userPage(userId):
+    print(f'user id: {userId}')
     data = decodeSessionToken(app)
     return jsonify(data)
 

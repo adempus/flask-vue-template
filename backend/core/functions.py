@@ -59,13 +59,13 @@ def signInUser(user, appKey):
                 return { 'error': True, 'message': signInErrors }
             else:
                 sessionToken = generateSessionToken({'user': getSignInPayload(userQuery)}, appKey)
-                res = make_response({
+                response = make_response({
                     'error': False,
                     'token': sessionToken.decode('UTF-8'),
                     'data': getSignInPayload(userQuery)
                 })
-                res.headers['Authorization'] = f'Bearer {sessionToken}'
-                return res
+                response.headers['Authorization'] = f'Bearer {sessionToken}'
+                return response
 
 
 def getSignInPayload(query):

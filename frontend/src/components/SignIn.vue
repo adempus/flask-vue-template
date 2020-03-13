@@ -208,9 +208,11 @@
           if (value.success) {
             console.log('sign in success: ', value.success);
             const token = this.signInState.response.token;
+            const userId = this.signInState.response.data.id;
             localStorage.setItem('token', token);
             this.$router.push({
-              name: 'User', params: { userId: this.signInState.response.data.id }
+              name: 'User',
+              params: { userId: userId },
             });
           }
         },
