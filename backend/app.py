@@ -1,4 +1,4 @@
-from core import db, signUpUser, signInUser, getAppKey, getDBCredentials, requireAuthentication, decodeSessionToken
+from core import db, signUpUser, signInUser, getAppKey, getDBCredentials, requireAuthentication, decodeSessionToken, postNewUserEntry
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -36,9 +36,9 @@ def testRoute():
     return jsonify({'td1': 'first', 'td2': 'second', 'td3': 'third', 'td4': 'fourth', 'td5': 'fifth'})
 
 
-@app.route('/protected-route', methods=['GET'])
+@app.route('/authenticate', methods=['GET'])
 @requireAuthentication(app)
-def protectedTestRoute():
+def authenticationRoute():
     data = decodeSessionToken(app)
     return jsonify(data)
 
@@ -48,10 +48,18 @@ def protectedTestRoute():
 def userPage(userId):
     print(f'user id: {userId}')
     data = decodeSessionToken(app)
-    if data['data']['user']['id'] == int(userId):
-        print("user ids match")
-        return jsonify(data)
-    return {'error': True, 'message': '401 Unauthorized. \nUser does not have permission to access this route.'}
+    if data['data']['user']['id'] != int(userId):
+        return {'error': True, 'message': '401 Unauthorized. \nUser does not have permission to access this route.'}
+    return jsonify(data)
+
+
+@app.route('/post-new-entry', methods=['POST'])
+@requireAuthentication(app)
+def postNewUserLog():
+    if request.method == 'POST':
+        entryData = dict(request.get_json())
+        resPayload = postNewUserEntry(entryData)
+        return jsonify(resPayload)
 
 
 @app.route('/sign-up', methods=['GET', 'POST'])
@@ -70,6 +78,6 @@ def signIn():
         return resPayload
 
 
-app.config['DEBUG'] = True
 if __name__ == '__main__':
     app.run(debug=True)
+

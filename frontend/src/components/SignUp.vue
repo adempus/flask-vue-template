@@ -342,6 +342,13 @@
         }
       },
     },
+    watch: {
+      signUpSuccess() {
+        if (this.signUpSuccess) {
+          this.$router.push({ name: 'SignIn' });
+        }
+      }
+    }
   };
 </script>
 

@@ -8,6 +8,7 @@
     <div v-else>
       <h1>Welcome {{username}}</h1>
       <h2>First name: {{firstName}}</h2>
+      <router-view></router-view>
     </div>
   </div>
 </template>

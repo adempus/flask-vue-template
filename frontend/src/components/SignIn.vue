@@ -92,10 +92,10 @@
       </b-card>
     </div>
 <!-- debug messages -->
-<p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>
-      <p class="text-break">
-        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}
-      </p>
+<!--<p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>-->
+<!--      <p class="text-break">-->
+<!--        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}-->
+<!--      </p>-->
   </b-container>
 </template>
 
@@ -210,6 +210,7 @@
             const token = this.signInState.response.token;
             const userId = this.signInState.response.data.id;
             localStorage.setItem('token', token);
+            this.$store.dispatch('setStateSignedIn');
             this.$router.push({
               name: 'User',
               params: { userId: userId },

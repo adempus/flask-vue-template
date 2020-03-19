@@ -4,7 +4,7 @@ import jwt
 import datetime
 from functools import wraps
 from flask import request, make_response
-from core import db, User
+from core import db, User, Entry
 
 
 def getDBCredentials(path):
@@ -66,6 +66,22 @@ def signInUser(user, appKey):
                 })
                 response.headers['Authorization'] = f'Bearer {sessionToken}'
                 return response
+
+
+def postNewUserEntry(entryData):
+    if not None in entryData.values():
+        title, content, userId = entryData['title'], entryData['entry'], entryData['userId']
+        timestamp = datetime.datetime.utcnow()
+        if len(title) < 1: title = None
+        newEntry = Entry(userId, title, content, timestamp)
+        db.session.add(newEntry)
+        db.session.commit()
+        # authToken = getAuthToken()
+        # print(f"auth token: {authToken}")
+        print(f"new entry submitted: {entryData}")
+        return {'error': False, 'message': 'Entry post successful'}
+    else:
+        return {'error': True, 'message': 'Entry post error. (no content)'}
 
 
 def getSignInPayload(query):
