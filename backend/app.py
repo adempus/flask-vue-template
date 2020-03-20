@@ -1,4 +1,6 @@
-from core import db, signUpUser, signInUser, getAppKey, getDBCredentials, requireAuthentication, decodeSessionToken, postNewUserEntry
+from core import db, signUpUser, signInUser, getAppKey, getDBCredentials, requireAuthentication, decodeSessionToken, \
+    postNewUserEntry, getUserEntries, getUserId, deleteUserEntry
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -11,8 +13,10 @@ def create_app():
     # CORS setup
     CORS(appInstance, resources={r'/*': {'origins': '*'}})
     appInstance.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    appInstance.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials('db_credentials.json')
-    appInstance.config['SECRET_KEY'] = getAppKey('app_key.json')
+    appInstance.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials(
+        '/home/adempus/Projects/flask-vue-template/backend/db_credentials.json'
+    )
+    appInstance.config['SECRET_KEY'] = getAppKey('/home/adempus/Projects/flask-vue-template/backend/app_key.json')
     return appInstance
 
 
@@ -53,15 +57,6 @@ def userPage(userId):
     return jsonify(data)
 
 
-@app.route('/post-new-entry', methods=['POST'])
-@requireAuthentication(app)
-def postNewUserLog():
-    if request.method == 'POST':
-        entryData = dict(request.get_json())
-        resPayload = postNewUserEntry(entryData)
-        return jsonify(resPayload)
-
-
 @app.route('/sign-up', methods=['GET', 'POST'])
 def signUp():
     if request.method == 'POST':
@@ -76,6 +71,32 @@ def signIn():
         signInData = dict(request.get_json())
         resPayload = signInUser(signInData, app.config['SECRET_KEY'])
         return resPayload
+
+
+@app.route('/post-new-entry', methods=['POST'])
+@requireAuthentication(app)
+def postNewUserLog():
+    if request.method == 'POST':
+        entryData = dict(request.get_json())
+        resPayload = postNewUserEntry(entryData)
+        return jsonify(resPayload)
+
+
+@app.route('/get-user-entries', methods=['GET'])
+@requireAuthentication(app)
+def getUserLogs():
+    userId = getUserId(app)
+    userEntries = getUserEntries(userId)
+    print(f"userEntries: {userEntries}")
+    return { 'error': False, 'data': userEntries }
+
+
+@app.route('/delete-user-entry', methods=['DELETE'])
+@requireAuthentication(app)
+def deleteUserLog():
+    deletionPayload = dict(request.get_json())
+    deletionResponse = deleteUserEntry(deletionPayload)
+    return jsonify(deletionResponse)
 
 
 if __name__ == '__main__':

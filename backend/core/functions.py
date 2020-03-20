@@ -5,6 +5,7 @@ import datetime
 from functools import wraps
 from flask import request, make_response
 from core import db, User, Entry
+from sqlalchemy import desc
 
 
 def getDBCredentials(path):
@@ -71,17 +72,45 @@ def signInUser(user, appKey):
 def postNewUserEntry(entryData):
     if not None in entryData.values():
         title, content, userId = entryData['title'], entryData['entry'], entryData['userId']
-        timestamp = datetime.datetime.utcnow()
+        timestamp = datetime.datetime.now()
         if len(title) < 1: title = None
         newEntry = Entry(userId, title, content, timestamp)
         db.session.add(newEntry)
         db.session.commit()
-        # authToken = getAuthToken()
-        # print(f"auth token: {authToken}")
         print(f"new entry submitted: {entryData}")
         return {'error': False, 'message': 'Entry post successful'}
     else:
         return {'error': True, 'message': 'Entry post error. (no content)'}
+
+
+def getUserEntries(userId):
+    if userId is not None:
+        entryQuery = Entry.query.filter_by(userId=userId).order_by(desc(Entry.entryDate)).all()
+        userEntries = [
+            {
+                'id': e.id,
+                'title': e.title,
+                'content': e.content,
+                'date': e.entryDate.strftime("%a, %B %d, %Y @ %I:%M %p")
+            }
+            for e in entryQuery
+        ]
+        return userEntries
+    return {'error': True, 'message': 'user ID is null'}
+
+
+def deleteUserEntry(deletionData):
+    print(f"deletion data: {deletionData}")
+    if len(deletionData) > 0:
+        entryId = deletionData['id']
+        entryQuery = Entry.query.filter_by(id=entryId).first()
+        if entryQuery is not None:
+            db.session.delete(entryQuery)
+            print("deleted record")
+            db.session.commit()
+            return {'error': False, 'message': f"entry {deletionData['title']} deleted successfully. "}
+        return {'error': True, 'message': 'Could not find the entry record provided.'}
+    return {'error': True, 'message': 'no deletion data provided. '}
 
 
 def getSignInPayload(query):
@@ -138,3 +167,8 @@ def getAuthToken():
     if token:
         return token.split(' ')[1]  # remove 'Bearer' part of token
     return None
+
+def getUserId(app):
+    userData = decodeSessionToken(app)
+    return userData['data']['user']['id']
+

@@ -1,15 +1,14 @@
 <template>
     <div v-if="!isSignedIn">
-      <b-nav card-header pills class="pl-3">
+      <b-nav card-header pills sticky class="pl-3">
         <b-nav-item to="/" exact exact-active-class="active">Home</b-nav-item>
         <b-nav-item to="/test-page" exact exact-active-class="active">Test Page</b-nav-item>
         <b-nav-item to="/sign-in" class="ml-auto" exact exact-active-class="active">Sign In</b-nav-item>
       </b-nav>
     </div>
     <div v-else>
-      <b-nav card-header pills class="pl-3">
-        <b-nav-item exact exact-active-class="active"
-                    :to="userHomeLink">
+      <b-nav card-header pills  class="pl-3">
+        <b-nav-item exact exact-active-class="active" :to="userHomeLink">
           Home
         </b-nav-item>
         <b-nav-item exact exact-active-class="active" :to="{ name: 'NewEntry' }">
