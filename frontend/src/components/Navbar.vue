@@ -8,7 +8,7 @@
     </div>
     <div v-else>
       <b-nav card-header pills  class="pl-3">
-        <b-nav-item exact exact-active-class="active" :to="userHomeLink">
+        <b-nav-item exact exact-active-class="active" :to="{ name: 'User', params: { userId: userId  }}">
           Home
         </b-nav-item>
         <b-nav-item exact exact-active-class="active" :to="{ name: 'NewEntry' }">

@@ -1,28 +1,27 @@
 <template>
-  <div>
+  <UserSession>
     <b-row align-v="start">
       <h2 class="mx-5 mb-5">Log Entries </h2>
     </b-row>
-    <div v-if="userEntries !== null">
-      <div v-if="userEntries.length > 0">
+      <div v-if="!userEntriesExist">
+        <p>You have 0 log entries.</p>
+        <router-link to="/user/:userId/new-entry" class="small" >Create a new entry.</router-link>
+      </div>
+      <div v-else>
         <div v-for="entry in userEntries">
-          <b-card class="mx-5 my-4 w-50 pt-2 text-capitalize" body-class="text-left"
-                  v-bind:title="entry.title === null ? 'Untitled' : entry.title">
-            <b-icon icon="x-circle"
-                    v-bind:id="entry.id"
+          <b-card class="mx-5 my-4 w-50 pt-2" body-class="text-left">
+            <b-card-title v-bind:title="entry.title === null ? 'Untitled' : entry.title"
+                          class="text-capitalize">{{ entry.title }}</b-card-title>
+            <!-- delete icon -->
+            <b-icon icon="x-circle" v-bind:id="entry.id"
                     v-on:click="displayDeleteConfirmation(entry)"
                     class="h5 position-relative float-right mt-n5"></b-icon>
-            <b-card-text con>{{ entry.content }}</b-card-text>
+            <b-card-text class="text">{{ entry.content }}</b-card-text>
             <b-card-text class="small text-muted">{{ entry.date }}</b-card-text>
           </b-card>
         </div>
       </div>
-      <div v-else>
-        <p>You have 0 log entries.</p>
-        <router-link to="/user/:userId/new-entry" class="small" >Create a new entry.</router-link>
-      </div>
-    </div>
-  </div>
+  </UserSession>
 </template>
 
 <script>
@@ -59,12 +58,6 @@
         return axios.get(endpoint, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
-      },
-      hoverDeleteIcon(hovered) {
-        this.isMouseoverDeleteIcon = hovered;
-      },
-      mouseOverDeleteAction(entry) {
-        this.deletionTarget = entry;
       },
       deleteEntry() {
         const endpoint = 'http://localhost:5000/delete-user-entry';
@@ -110,6 +103,14 @@
           .catch((err) => {
             // An error occurred
           });
+      }
+    },
+    computed: {
+      signInStatus() {
+        return this.$store.getters.isSignedIn;
+      },
+      userEntriesExist() {
+        return this.userEntries !== null ? this.userEntries.length > 0 : false;
       }
     }
   };

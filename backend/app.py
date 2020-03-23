@@ -53,7 +53,10 @@ def userPage(userId):
     print(f'user id: {userId}')
     data = decodeSessionToken(app)
     if data['data']['user']['id'] != int(userId):
-        return {'error': True, 'message': '401 Unauthorized. \nUser does not have permission to access this route.'}
+        return {
+            'error': True,
+            'message': '401 Unauthorized. \nUser does not have permission to access this route.'
+        }
     return jsonify(data)
 
 
@@ -97,6 +100,7 @@ def deleteUserLog():
     deletionPayload = dict(request.get_json())
     deletionResponse = deleteUserEntry(deletionPayload)
     return jsonify(deletionResponse)
+
 
 
 if __name__ == '__main__':

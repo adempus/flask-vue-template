@@ -1,57 +1,57 @@
 <template>
-  <b-container fluid>
-    <div v-if="!isSignedIn">
-      <h1>Error</h1>
-      <p>Not signed in</p>
-    </div>
-    <div v-else class="ml-5">
-      <b-row align-v="start" >
-        <h2 class="mb-5">New Log Entry</h2>
-      </b-row>
-      <b-row align-v="start">
-        <b-form @submit.prevent="submitEntry">
-          <b-form-group
-            id="entry-title-group"
-            label="Title: "
-            label-for="entry-title"
-            label-align="left"
-          >
-            <b-form-input
-              id="entry-title"
-              v-model="entryForm.title"
-              type="text"
-              placeholder="Captain's Log 0243"
-              class="input-width"
-            ></b-form-input>
-          </b-form-group>
+  <UserSession>
+    <b-container fluid>
+      <div class="ml-5">
+        <b-row align-v="start">
+          <h2 class="mb-5">New Log Entry</h2>
+        </b-row>
+        <b-row align-v="start">
+          <b-form @submit.prevent="submitEntry">
+            <!-- title input  -->
+            <b-form-group
+              id="entry-title-group"
+              label="Title: "
+              label-for="entry-title"
+              label-align="left"
+            >
+              <b-form-input
+                id="entry-title"
+                v-model="entryForm.title"
+                type="text"
+                placeholder="Captain's Log 0243"
+                class="input-width"
+              ></b-form-input>
+            </b-form-group>
 
-          <b-form-group
-            id="entry-content-group"
-            label="Entry:"
-            label-for="entry-content"
-            label-align="left"
-          >
-            <b-form-textarea
-              id="entry-content"
-              v-model="entryForm.content"
-              placeholder="Enter some text here..."
-              rows="4"
-              no-resize
-            ></b-form-textarea>
-            <b-form-invalid-feedback
-              align="left"
-              v-if="this.submitClicked && this.$v.entryForm.content"
-              :state="this.$v.entryForm.content.required">
-              Entry field cannot be empty.
-            </b-form-invalid-feedback>
-          </b-form-group>
-          <b-row class="d-flex justify-content-start pl-3 pt-3">
-            <b-button type="submit" variant="primary">Submit</b-button>
-          </b-row>
-        </b-form>
-      </b-row>
-    </div>
-  </b-container>
+            <!-- entry input  -->
+            <b-form-group
+              id="entry-content-group"
+              label="Entry:"
+              label-for="entry-content"
+              label-align="left"
+            >
+              <b-form-textarea
+                id="entry-content"
+                v-model="entryForm.content"
+                placeholder="Enter some text here..."
+                rows="4"
+                no-resize
+              ></b-form-textarea>
+              <b-form-invalid-feedback
+                align="left"
+                v-if="this.submitClicked && this.$v.entryForm.content"
+                :state="this.$v.entryForm.content.required">
+                Entry field cannot be empty.
+              </b-form-invalid-feedback>
+            </b-form-group>
+            <b-row class="d-flex justify-content-start pl-3 pt-3">
+              <b-button type="submit" variant="primary">Submit</b-button>
+            </b-row>
+          </b-form>
+        </b-row>
+      </div>
+    </b-container>
+  </UserSession>
 </template>
 
 <script>
@@ -93,7 +93,6 @@
                 if (!this.submitResponse.error) {
                   Object.assign(this.$data, this.$options.data.apply(this));
                 }
-                // console.log('response: ', response);
             });
           }
         }

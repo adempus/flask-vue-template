@@ -1,16 +1,11 @@
 <template>
-  <div v-if="userPageState.response !== null">
-    <div v-if="userPageState.response.error">
-      <h1>Error</h1>
-      <p>{{userPageState.response.message}}</p>
-    </div>
-    <!-- User data is displayed below if no errors are present. -->
-    <div v-else>
-      <h1>Welcome {{username}}</h1>
-      <h2>First name: {{firstName}}</h2>
-      <router-view></router-view>
-    </div>
-  </div>
+    <UserSession>
+      <div>
+        <h1>Welcome {{username}}</h1>
+        <h2>First name: {{firstName}}</h2>
+<!--        <router-view></router-view>-->
+      </div>
+    </UserSession>
 </template>
 
 <script>

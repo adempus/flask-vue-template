@@ -211,10 +211,7 @@
             const userId = this.signInState.response.data.id;
             localStorage.setItem('token', token);
             this.$store.dispatch('setStateSignedIn');
-            this.$router.replace({
-              name: 'User',
-              params: { userId: userId },
-            });
+            window.location.href = `/user/${userId}`;
           }
         },
         deep: true
