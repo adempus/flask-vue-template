@@ -8,6 +8,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import Navbar from './components/Navbar.vue';
 import UserSession from './components/UserSession.vue';
+import SlideTransition from './components/SlideTransition.vue';
 import NotSignedInError from './components/errors/NotSignedInError.vue';
 
 Vue.config.productionTip = false;
@@ -18,6 +19,7 @@ Vue.use(IconsPlugin);
 Vue.component('navbar', Navbar);
 Vue.component('NotSignedInError', NotSignedInError);
 Vue.component('UserSession', UserSession);
+Vue.component('SlideTransition', SlideTransition);
 
 new Vue({
   router,

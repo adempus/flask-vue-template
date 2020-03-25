@@ -31,7 +31,8 @@ const store = new Vuex.Store({
     },
     updateSignInValidation(context) {
       if (localStorage.getItem('token') !== null) {
-        const endpoint = 'http://localhost:5000/authenticate';
+        // const endpoint = 'http://localhost:5000/authenticate';
+        const endpoint = 'http://192.168.1.158:5000/authenticate';
         axios.get(endpoint, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         }).then((response) => {

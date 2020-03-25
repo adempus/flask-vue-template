@@ -6,7 +6,7 @@
           <h2 class="mb-5">New Log Entry</h2>
         </b-row>
         <b-row align-v="start">
-          <b-form @submit.prevent="submitEntry">
+          <b-form @submit.prevent="submit()">
             <!-- title input  -->
             <b-form-group
               id="entry-title-group"
@@ -59,50 +59,54 @@
   import { required } from 'vuelidate/lib/validators';
 
   export default {
-      name: 'NewEntry',
-      data() {
-        return {
-          submitClicked: false,
-          entryForm: {
-            title: '',
-            content: ''
-          },
-          submitResponse: null,
-        };
-      },
-    validations: {
+    name: 'NewEntry',
+    data() {
+      return {
+        submitClicked: false,
         entryForm: {
-          content: { required }
-        }
-      },
-      methods: {
-        submitEntry() {
-          this.submitClicked = true;
-          if (this.$v.$invalid) {
-            console.log('Entry field empty');
-          } else {
-            const endpoint = 'http://localhost:5000/post-new-entry';
-            const headerConfig = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
-            axios.post(endpoint, {
-              userId: this.$store.getters.userId,
-              title: this.entryForm.title,
-              entry: this.entryForm.content,
-            }, headerConfig)
-              .then((response) => {
-                this.submitResponse = response.data;
-                if (!this.submitResponse.error) {
-                  Object.assign(this.$data, this.$options.data.apply(this));
-                }
-            });
-          }
-        }
-      },
-      computed: {
-        isSignedIn() {
-          return this.$store.getters.isSignedIn;
+          title: '',
+          content: ''
         },
+        submitResponse: null,
+      };
+    },
+    validations: {
+      entryForm: {
+        content: { required }
       }
-    };
+    },
+    methods: {
+      submit() {
+        this.submitClicked = true;
+        if (this.$v.$invalid) {
+          console.log('Entry field empty');
+        } else {
+          this.postEntry()
+            .then((response) => {
+              this.submitResponse = response.data;
+              if (!this.submitResponse.error) {
+                Object.assign(this.$data, this.$options.data.apply(this));
+              }
+            })
+            .catch((error) => {
+              console.log('An error occurred: ', error);
+            });
+        }
+      },
+      postEntry() {
+        // const endpoint = 'http://localhost:5000/post-new-entry';
+        const endpoint = 'http://192.168.1.158:5000/post-new-entry';
+        const headerConfig = {
+          headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        };
+        return axios.post(endpoint, {
+          userId: this.$store.getters.userId,
+          title: this.entryForm.title,
+          entry: this.entryForm.content,
+        }, headerConfig);
+      }
+    },
+  };
 </script>
 
 <style scoped>

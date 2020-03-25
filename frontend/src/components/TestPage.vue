@@ -28,7 +28,7 @@
 
     methods: {
       getTestData() {
-        const testEndpoint = 'http://localhost:5000/test-route';
+        const testEndpoint = 'http://192.168.1.158:5000/test-route';
         axios.get(testEndpoint)
           .then((response) => {
             console.log('response: ', response);

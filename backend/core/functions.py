@@ -100,13 +100,12 @@ def getUserEntries(userId):
 
 
 def deleteUserEntry(deletionData):
-    print(f"deletion data: {deletionData}")
     if len(deletionData) > 0:
         entryId = deletionData['id']
         entryQuery = Entry.query.filter_by(id=entryId).first()
         if entryQuery is not None:
             db.session.delete(entryQuery)
-            print("deleted record")
+            print(f"deleted entry record {id}")
             db.session.commit()
             return {'error': False, 'message': f"entry {deletionData['title']} deleted successfully. "}
         return {'error': True, 'message': 'Could not find the entry record provided.'}

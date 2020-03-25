@@ -9,16 +9,18 @@
       </div>
       <div v-else>
         <div v-for="entry in userEntries">
-          <b-card class="mx-5 my-4 w-50 pt-2" body-class="text-left">
-            <b-card-title v-bind:title="entry.title === null ? 'Untitled' : entry.title"
-                          class="text-capitalize">{{ entry.title }}</b-card-title>
-            <!-- delete icon -->
-            <b-icon icon="x-circle" v-bind:id="entry.id"
-                    v-on:click="displayDeleteConfirmation(entry)"
-                    class="h5 position-relative float-right mt-n5"></b-icon>
-            <b-card-text class="text">{{ entry.content }}</b-card-text>
-            <b-card-text class="small text-muted">{{ entry.date }}</b-card-text>
-          </b-card>
+          <SlideTransition>
+            <b-card v-if="show" class="mx-5 my-4 w-50 pt-2" body-class="text-left">
+              <b-card-title v-bind:title="entry.title === null ? 'Untitled' : entry.title"
+                            class="text-capitalize">{{ entry.title }}</b-card-title>
+              <!-- delete icon -->
+              <b-icon icon="x-circle" v-bind:id="entry.id"
+                      v-on:click="displayDeleteConfirmation(entry)"
+                      class="h5 position-relative float-right mt-n5"></b-icon>
+              <b-card-text class="text">{{ entry.content }}</b-card-text>
+              <b-card-text class="small text-muted">{{ entry.date }}</b-card-text>
+            </b-card>
+          </SlideTransition>
         </div>
       </div>
   </UserSession>
@@ -34,6 +36,7 @@
       BIcon
     },
     mounted() {
+      this.show = true;
       this.initUserEntries();
     },
     data() {
@@ -42,25 +45,28 @@
         deletionTarget: null,
         deletionResponse: null,
         boxTwo: null,
+        show: true,
       };
     },
     methods: {
       initUserEntries() {
-        this.fetchEntries().then((response) => {
+        this.getEntries().then((response) => {
           const res = response;
           if (!res.data.error) {
             this.userEntries = res.data.data;
           }
         });
       },
-      fetchEntries() {
-        const endpoint = 'http://localhost:5000/get-user-entries';
+      getEntries() {
+        // const endpoint = 'http://localhost:5000/get-user-entries';
+        const endpoint = 'http://192.168.1.158:5000/get-user-entries';
         return axios.get(endpoint, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
       },
       deleteEntry() {
-        const endpoint = 'http://localhost:5000/delete-user-entry';
+        // const endpoint = 'http://localhost:5000/delete-user-entry';
+        const endpoint = 'http://192.168.1.158:5000/delete-user-entry';
         return axios.delete(endpoint, {
           data: this.deletionTarget,
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }

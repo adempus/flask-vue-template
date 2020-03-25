@@ -10,9 +10,9 @@
 </template>
 
 <script>
-    export default {
-      name: 'UserSession',
-    };
+  export default {
+    name: 'UserSession',
+  };
 </script>
 
 <style scoped>
