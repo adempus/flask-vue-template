@@ -25,7 +25,7 @@
                 v-model="entryForm.title"
                 type="text"
                 placeholder="Captain's Log 0243"
-                class="input-width"
+                class="w-100"
               ></b-form-input>
             </b-form-group>
 
