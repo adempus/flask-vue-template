@@ -11,14 +11,22 @@
         <b-nav-item exact exact-active-class="active" :to="{ name: 'User', params: { userId: userId }}">
           Home
         </b-nav-item>
-        <b-nav-item exact exact-active-class="active" :to="{ name: 'NewEntry' }">
-          New Entry
-        </b-nav-item>
-        <b-nav-item exact exact-active-class="active" :to="{ name: 'Entries' }">
-          Entries
-        </b-nav-item>
+          <b-nav-item-dropdown text="Entries" right class="entries-tab">
+            <b-dropdown-item exact exact-active-class="active" :to="{ name: 'Entries' }">
+              View Entries
+            </b-dropdown-item>
+            <b-dropdown-item  exact exact-active-class="active" :to="{ name: 'NewEntry' }">
+              New Entry
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item exact exact-active-class="active" :to="{ name: 'NewEntry' }" class="entry-buttons">
+            New Entry
+          </b-nav-item>
+          <b-nav-item exact exact-active-class="active" :to="{ name: 'Entries' }" class="entry-buttons">
+            Entries
+          </b-nav-item>
         <div class="ml-auto">
-          <b-nav-item v-on:click="signOutUser()">Sign Out</b-nav-item>
+          <b-nav-item v-on:click="signOutUser()" class="signOutBtn">Sign Out</b-nav-item>
         </div>
       </b-nav>
     </div>
@@ -56,5 +64,21 @@
 </script>
 
 <style scoped>
+  @media (max-width: 399px) {
+    .entries-tab {
+      display: block;
+    }
+    .entry-buttons {
+      display: none;
+    }
+  }
+  @media (min-width: 400px) {
+    .entry-buttons {
+      display: block;
+    }
+    .entries-tab {
+      display: none;
+    }
+  }
 
 </style>

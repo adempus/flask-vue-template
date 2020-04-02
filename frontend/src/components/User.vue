@@ -27,8 +27,7 @@
     methods: {
       getUserData() {
         if (localStorage.token) {
-          // const endpoint = `http://localhost:5000/${this.$route.fullPath}`;
-          const endpoint = `http://192.168.1.158:5000/${this.$route.fullPath}`;
+          const endpoint = `${this.$root.root}${this.$route.fullPath}`;
           console.log('curent url: ', this.$route.fullPath);
           axios.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
           axios.get(endpoint).then((res) => {

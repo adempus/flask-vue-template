@@ -35,5 +35,5 @@ class Entry(db.Model):
         self.content = content
         self.entryDate = entryDate
 
-        def __repr__(self):
-            return '<Entry %r>' % self.id
+    def __repr__(self):
+        return '<Entry %r>' % self.id

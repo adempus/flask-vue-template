@@ -4,12 +4,14 @@
       <h2 class="mx-5 mb-5">Log Entries </h2>
     </b-row>
       <div v-if="!userEntriesExist">
-        <p>You have 0 log entries.</p>
-        <router-link to="/user/:userId/new-entry" class="small" >Create a new entry.</router-link>
+        <div>
+          <p>You have 0 log entries.</p>
+          <router-link to="/user/:userId/new-entry" class="small" >Create a new entry.</router-link>
+        </div>
       </div>
       <div v-else>
         <div v-for="entry in userEntries">
-          <SlideTransition>
+          <EntriesTransition>
             <b-card v-if="show" class="mx-5 my-4 w-50 pt-2" body-class="text-left">
               <b-card-title v-bind:title="entry.title === null ? 'Untitled' : entry.title"
                             class="text-capitalize">{{ entry.title }}</b-card-title>
@@ -20,7 +22,7 @@
               <b-card-text class="text">{{ entry.content }}</b-card-text>
               <b-card-text class="small text-muted">{{ entry.date }}</b-card-text>
             </b-card>
-          </SlideTransition>
+          </EntriesTransition>
         </div>
       </div>
   </UserSession>
@@ -37,8 +39,10 @@
     },
     mounted() {
       this.show = true;
+      this.$store.dispatch('updateSignInValidation');
       this.initUserEntries();
     },
+
     data() {
       return {
         userEntries: [],
@@ -50,23 +54,22 @@
     },
     methods: {
       initUserEntries() {
-        this.getEntries().then((response) => {
-          const res = response;
-          if (!res.data.error) {
-            this.userEntries = res.data.data;
-          }
+        this.getEntries()
+          .then((response) => {
+            const res = response;
+            if (!res.data.error) {
+              this.userEntries = res.data.data;
+            }
         });
       },
       getEntries() {
-        // const endpoint = 'http://localhost:5000/get-user-entries';
-        const endpoint = 'http://192.168.1.158:5000/get-user-entries';
+        const endpoint = this.$root.getEntries;
         return axios.get(endpoint, {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         });
       },
       deleteEntry() {
-        // const endpoint = 'http://localhost:5000/delete-user-entry';
-        const endpoint = 'http://192.168.1.158:5000/delete-user-entry';
+        const endpoint = this.$root.deleteEntry;
         return axios.delete(endpoint, {
           data: this.deletionTarget,
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
@@ -112,13 +115,10 @@
       }
     },
     computed: {
-      signInStatus() {
-        return this.$store.getters.isSignedIn;
-      },
       userEntriesExist() {
         return this.userEntries !== null ? this.userEntries.length > 0 : false;
       }
-    }
+    },
   };
 </script>
 

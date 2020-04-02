@@ -4,7 +4,7 @@
       <b-spinner class="mt-5" variant="primary" style="width: 3rem; height: 3rem;"></b-spinner>
     </div>
     <div v-else>
-      <SlideTransition>
+      <SignInOutTransition>
         <div>
           <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
             <h4>Sign In</h4>
@@ -96,13 +96,13 @@
             </b-form>
           </b-card>
         </div>
-      </SlideTransition>
+      </SignInOutTransition>
     </div>
-<!-- debug messages -->
-<!--<p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>-->
-<!--      <p class="text-break">-->
-<!--        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}-->
-<!--      </p>-->
+    <!-- debug messages -->
+    <!--<p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>-->
+    <!--      <p class="text-break">-->
+    <!--        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}-->
+    <!--      </p>-->
   </b-container>
 </template>
 
@@ -170,8 +170,7 @@
         }
       },
       requestUserSignIn() {
-        // const endpoint = 'http://localhost:5000/sign-in';
-        const endpoint = 'http://192.168.1.158:5000/sign-in';
+        const endpoint = this.$root.signIn;
         return axios.post(endpoint, {
           email: this.email,
           password: this.password,

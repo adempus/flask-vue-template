@@ -1,6 +1,6 @@
 <template>
   <b-container class="form-width mt-2">
-    <SlideTransition>
+    <SignInOutTransition>
       <div>
         <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
           <h4>Sign Up</h4>
@@ -200,7 +200,7 @@
           </b-form>
         </b-card>
       </div>
-    </SlideTransition>
+    </SignInOutTransition>
 
     <!-- debug message -->
 <!--    <div>-->
@@ -313,8 +313,7 @@
         }
       },
       requestUserSignUp() {
-        // const endpoint = 'http://localhost:5000/sign-up';
-        const endpoint = 'http://192.168.1.158:5000/sign-up';
+        const endpoint = this.$root.signUp;
         return axios.post(endpoint, {
           firstName: this.firstName,
           lastName: this.lastName,

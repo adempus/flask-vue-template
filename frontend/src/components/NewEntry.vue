@@ -1,7 +1,13 @@
 <template>
   <UserSession>
+    <b-alert fade class="successAlert position-absolute"
+             :show="hideAlertTimer"
+             variant="success"
+             @dismiss-count-down="updateCountdown">
+      Log Submitted Successfully!
+    </b-alert>
     <b-container fluid>
-      <div class="ml-5">
+      <div class="ml-5 mt-4">
         <b-row align-v="start">
           <h2 class="mb-5">New Log Entry</h2>
         </b-row>
@@ -62,12 +68,14 @@
     name: 'NewEntry',
     data() {
       return {
-        submitClicked: false,
         entryForm: {
           title: '',
           content: ''
         },
         submitResponse: null,
+        submitClicked: false,
+        secsBeforeHideAlert: 2,
+        hideAlertTimer: 0,
       };
     },
     validations: {
@@ -86,6 +94,7 @@
               this.submitResponse = response.data;
               if (!this.submitResponse.error) {
                 Object.assign(this.$data, this.$options.data.apply(this));
+                this.showSuccessAlert();
               }
             })
             .catch((error) => {
@@ -94,8 +103,7 @@
         }
       },
       postEntry() {
-        // const endpoint = 'http://localhost:5000/post-new-entry';
-        const endpoint = 'http://192.168.1.158:5000/post-new-entry';
+        const endpoint = this.$root.postEntry;
         const headerConfig = {
           headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
         };
@@ -104,6 +112,12 @@
           title: this.entryForm.title,
           entry: this.entryForm.content,
         }, headerConfig);
+      },
+      showSuccessAlert() {
+        this.hideAlertTimer = this.secsBeforeHideAlert;
+      },
+      updateCountdown(value) {
+        this.hideAlertTimer = value;
       }
     },
   };
@@ -116,5 +130,11 @@
   }
   .input-width {
     width: 30vw;
+  }
+  .successAlert {
+    /*top: 5vh;*/
+    top: 11.5%;
+    left: 0;
+    width: 100%;
   }
 </style>
