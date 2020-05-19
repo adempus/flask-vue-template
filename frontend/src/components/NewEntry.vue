@@ -7,7 +7,7 @@
       Log Submitted Successfully!
     </b-alert>
     <b-container fluid>
-      <div class="ml-5 mt-4">
+      <div class="ml-4 mt-4">
         <b-row align-v="start">
           <h2 class="mb-5">New Log Entry</h2>
         </b-row>

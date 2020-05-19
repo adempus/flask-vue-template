@@ -1,24 +1,20 @@
-# Installation
+# Setup
 
-##Python/Flask setup
-The project's built with all dependencies using pipenv. The dependencies are located in ```Pipfile``` To install the dependencies, make sure you're in the project root folder and enter:
+##Flask Backend w. Poetry
+The project's backend is built using Poetry dependency manager. The ```poetry.lock``` file contains all of the project dependencies.  To install them, make sure python-poetry is installed beforehand. Then in a terminal, cd to the project's root folder, and enter:
 ```
-pipenv install
+poetry install
 ```
 
-To active the project's virtualenv, run:
+This will set the project up with all its dependencies, within a Poetry virtual env. To find its path for use in your IDE's interpreter settings for the project, enter:
 ```
-pipenv shell
+poetry env info --path
 ``` 
 
-You can then install the project's dependencies using
-```
- pipenv install --dev
-```
 
-You can install new dependencies which will be added in the Pipfile using:
+To add new package dependencies to the project:
 ```
-pipenv install some-python-package
+poetry add some-python-package
 ```
 
 You'll want to create a ```db_credentials.json``` file in the project's root. It's initially gitignored. Format goes like so:
@@ -33,12 +29,10 @@ You'll want to create a ```db_credentials.json``` file in the project's root. It
 }
 ```
 
-
 To run the server enter: 
 ```
 flask run
 ```
-You may need to be in a pipenv shell if the above command doesn't work. If failure occurs, refer to the second step
 
 #####NOTE: if the ```migrations``` folder is present, then skip this step)
 if not, you can initialize migrations with Flask-Migrate already installed. 

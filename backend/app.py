@@ -14,9 +14,9 @@ def create_app():
     CORS(appInstance, resources={r'/*': {'origins': '*'}})
     appInstance.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     appInstance.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials(
-        '/home/adempus/Projects/flask-vue-template/backend/db_credentials.json'
+        'db_credentials.json'
     )
-    appInstance.config['SECRET_KEY'] = getAppKey('/home/adempus/Projects/flask-vue-template/backend/app_key.json')
+    appInstance.config['SECRET_KEY'] = getAppKey('app_key.json')
     return appInstance
 
 

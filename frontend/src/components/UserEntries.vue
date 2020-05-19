@@ -12,7 +12,7 @@
       <div v-else>
         <div v-for="entry in userEntries">
           <EntriesTransition>
-            <b-card v-if="show" class="mx-5 my-4 w-50 pt-2" body-class="text-left">
+            <b-card v-if="show" class="mx-4 my-4 w-75 pt-2" body-class="text-left">
               <b-card-title v-bind:title="entry.title === null ? 'Untitled' : entry.title"
                             class="text-capitalize">{{ entry.title }}</b-card-title>
               <!-- delete icon -->
