@@ -6,13 +6,13 @@ The project's backend is built using Poetry package manager. The ```poetry.lock`
 poetry install
 ```
 
-This will set the project up with all its dependencies, within a Poetry virtual env. To find its path for use in your IDE's interpreter settings for the project, enter:
+This will set the project up with all its dependencies, within a Poetry virtual env. To find its path for use in your IDE's interpreter settings, enter:
 ```
 poetry env info --path
 ``` 
 
 
-To add new package dependencies to the project:
+To add new packages to the project:
 ```
 poetry add some-python-package
 ```
