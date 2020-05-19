@@ -1,6 +1,6 @@
 # Setup
 
-##Flask Backend w. Poetry
+## Flask Backend w. Poetry
 The project's backend is built using Poetry dependency manager. The ```poetry.lock``` file contains all of the project dependencies.  To install them, make sure python-poetry is installed beforehand. Then in a terminal, cd to the project's root folder, and enter:
 ```
 poetry install
