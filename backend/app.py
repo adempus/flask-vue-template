@@ -13,9 +13,7 @@ def create_app():
     # CORS setup
     CORS(appInstance, resources={r'/*': {'origins': '*'}})
     appInstance.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    appInstance.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials(
-        'db_credentials.json'
-    )
+    appInstance.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials('db_credentials.json')
     appInstance.config['SECRET_KEY'] = getAppKey('app_key.json')
     return appInstance
 
