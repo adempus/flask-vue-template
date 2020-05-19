@@ -34,7 +34,7 @@ To run the server enter:
 flask run
 ```
 
-#####NOTE: if the ```migrations``` folder is present, then skip this step)
+##### NOTE: if the ```migrations``` folder is present, then skip this step)
 if not, you can initialize migrations with Flask-Migrate already installed. 
 ```
 flask db init
