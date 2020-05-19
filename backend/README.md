@@ -16,14 +16,14 @@ To add new packages to the project:
 ```
 poetry add some-python-package
 ```
-You'll want to create a ```app_key.json``` file in the project's root. It contains the app's secret key, and is gitignored. Formatted like: 
+You'll want to create a ```app_key.json``` file in the project's root folder. It contains the app's secret key, and is gitignored. Formatted like: 
 ```
 {
   "app_key": "some-secret-key"
 }
 ```
 
-create a ```db_credentials.json``` file in the project's root for app's connection to database. It is also gitignored. Format  like so:
+also create a ```db_credentials.json``` file in the root, it is gitignored as well. Format  like so:
 ```
 {
   "driver": "mysql",
