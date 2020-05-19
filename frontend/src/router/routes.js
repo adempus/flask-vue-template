@@ -5,6 +5,10 @@ import Home from '../views/Home.vue';
 import TestPage from '../components/TestPage.vue';
 import SignUp from '../components/SignUp.vue';
 import SignIn from '../components/SignIn.vue';
+import User from '../components/User.vue';
+import NewEntry from '../components/NewEntry.vue';
+import UserEntries from '../components/UserEntries.vue';
+
 
 Vue.use(VueRouter);
 
@@ -36,7 +40,23 @@ const routes = [
     path: '/sign-in',
     name: 'SignIn',
     component: SignIn,
-  }
+  },
+  {
+    path: '/user/:userId',
+    name: 'User',
+    component: User,
+  },
+  {
+    path: '/user/:userId/new-entry',
+    name: 'NewEntry',
+    component: NewEntry
+  },
+  {
+    path: '/user/:userId/entries',
+    name: 'Entries',
+    component: UserEntries
+  },
+
 ];
 
 const router = new VueRouter({

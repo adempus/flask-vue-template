@@ -1,7 +1,7 @@
 # Editor directories and files
 .idea
-venv
 db_credentials.json
+app_key.json
 .vscode
 *.suo
 *.ntvs*

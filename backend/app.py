@@ -1,4 +1,6 @@
-from core import db, signUpUser, signInUser, getAppKey, getDBCredentials, requireAuthentication, decodeSessionToken
+from core import db, signUpUser, signInUser, getAppKey, getDBCredentials, requireAuthentication, decodeSessionToken, \
+    postNewUserEntry, getUserEntries, getUserId, deleteUserEntry
+
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_migrate import Migrate
@@ -11,7 +13,9 @@ def create_app():
     # CORS setup
     CORS(appInstance, resources={r'/*': {'origins': '*'}})
     appInstance.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    appInstance.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials('db_credentials.json')
+    appInstance.config['SQLALCHEMY_DATABASE_URI'] = getDBCredentials(
+        'db_credentials.json'
+    )
     appInstance.config['SECRET_KEY'] = getAppKey('app_key.json')
     return appInstance
 
@@ -21,6 +25,7 @@ app.app_context().push()
 # database initialization
 db.init_app(app)
 migrate = Migrate(app, db)
+
 
 """ ***********  backend routes  ************* """
 
@@ -35,10 +40,23 @@ def testRoute():
     return jsonify({'td1': 'first', 'td2': 'second', 'td3': 'third', 'td4': 'fourth', 'td5': 'fifth'})
 
 
-@app.route('/protected-route', methods=['GET'])
+@app.route('/authenticate', methods=['GET'])
 @requireAuthentication(app)
-def protectedTestRoute():
+def authenticationRoute():
     data = decodeSessionToken(app)
+    return jsonify(data)
+
+
+@app.route('/user/<userId>', methods=['GET'])
+@requireAuthentication(app)
+def userPage(userId):
+    print(f'user id: {userId}')
+    data = decodeSessionToken(app)
+    if data['data']['user']['id'] != int(userId):
+        return {
+            'error': True,
+            'message': '401 Unauthorized. \nUser does not have permission to access this route.'
+        }
     return jsonify(data)
 
 
@@ -55,8 +73,36 @@ def signIn():
     if request.method == 'POST':
         signInData = dict(request.get_json())
         resPayload = signInUser(signInData, app.config['SECRET_KEY'])
+        return resPayload
+
+
+@app.route('/post-new-entry', methods=['POST'])
+@requireAuthentication(app)
+def postNewUserLog():
+    if request.method == 'POST':
+        entryData = dict(request.get_json())
+        resPayload = postNewUserEntry(entryData)
         return jsonify(resPayload)
 
 
+@app.route('/get-user-entries', methods=['GET'])
+@requireAuthentication(app)
+def getUserLogs():
+    userId = getUserId(app)
+    userEntries = getUserEntries(userId)
+    print(f"userEntries: {userEntries}")
+    return { 'error': False, 'data': userEntries }
+
+
+@app.route('/delete-user-entry', methods=['DELETE'])
+@requireAuthentication(app)
+def deleteUserLog():
+    deletionPayload = dict(request.get_json())
+    deletionResponse = deleteUserEntry(deletionPayload)
+    return jsonify(deletionResponse)
+
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    # app.run(debug=True, port=5000)
+    app.run(host='0.0.0.0', threaded=True, debug=True, port=5000)
+

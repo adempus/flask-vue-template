@@ -1,101 +1,108 @@
 <template>
-  <b-container class="form-width mt-5">
-    <div>
-      <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
-        <h4>Sign In</h4>
-      </b-card-header>
-      <b-card class="text-center px-4 pt-2 shadow-sm rounded">
-        <b-form @submit.prevent="signIn">
-          <!-- email field -->
-          <b-row>
-            <b-form-group
-              id="emailGroup"
-              label="Email:"
-              label-for="email"
-              label-cols="true"
-              label-align="left"
-              class="input-label-text w-100">
-              <b-form-input
-                id="email"
-                v-model="email"
-                placeholder="email@domain.com"
-                aria-describedby="email-input-feedback"
-                :state="validateState('email')"
-                trim>
-              </b-form-input>
-              <!-- required email error feedback -->
-              <b-form-invalid-feedback
-                v-if="!this.$v.email.email || !this.$v.email.required && signInState.requested"
-                align="left"
-                :state="this.$v.email.required"
-                id="email-input-feedback">
-                {{ !this.$v.email.email ? '* Email is invalid' : '* Email is required ' }}
-              </b-form-invalid-feedback>
-              <!-- email not found error feedback  -->
-              <b-form-invalid-feedback
-                v-if="this.$v.email.email && this.$v.email.required && signInState.requested"
-                align="left"
-                :state="this.$v.email.emailNotFound"
-                id="email-input-feedback">
-                * There is no user with this email. Try again.
-              </b-form-invalid-feedback>
-            </b-form-group>
-          </b-row>
-
-          <!-- password field -->
-          <b-row>
-            <b-form-group
-              id="passwordGroup"
-              label="Password:"
-              label-for="password"
-              label-cols="true"
-              label-align="left"
-              class="input-label-text w-100">
-              <b-form-input
-                id="password"
-                v-model="password"
-                type="password"
-                placeholder=""
-                aria-describedby="password-input-feedback"
-                :state="validateState('password')"
-                trim>
-              </b-form-input>
-              <!-- password required feedback -->
-              <b-form-invalid-feedback
-                v-if="!this.$v.password.required && signInState.requested"
-                align="left"
-                :state="this.$v.password.required"
-                id="password-input-feedback">
-                * Password is required
-              </b-form-invalid-feedback>
-              <!-- incorrect password feedback -->
-              <b-form-invalid-feedback
-                v-if="this.$v.password.required && signInState.requested"
-                align="left"
-                :state="this.$v.password.incorrectPassword"
-                id="password-input-feedback">
-                * Incorrect password, try again.
-              </b-form-invalid-feedback>
-            </b-form-group>
-          </b-row>
-          <!-- Submit button -->
-          <b-row class="justify-content-center mt-3 pl-3 pr-3">
-            <b-button type="submit" variant="info">Sign In</b-button>
-          </b-row>
-          <b-row>
-            <router-link to="/sign-up" class="pt-3 mr-4 mb-n2 sign-up-link mx-auto">
-              Don't have an account? Sign Up
-              <b-icon-chevron-right></b-icon-chevron-right>
-            </router-link>
-          </b-row>
-        </b-form>
-      </b-card>
+  <b-container class="form-width mt-2">
+    <div v-if="signInState.pending" class="pt-5">
+      <b-spinner class="mt-5" variant="primary" style="width: 3rem; height: 3rem;"></b-spinner>
     </div>
-<!-- debug messages -->
-<p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>
-      <p class="text-break">
-        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}
-      </p>
+    <div v-else>
+      <SignInOutTransition>
+        <div>
+          <b-card-header bg-variant="light" header-bg-variant="dark" header-text-variant="white">
+            <h4>Sign In</h4>
+          </b-card-header>
+          <b-card class="text-center px-4 pt-2 shadow rounded">
+            <b-form @submit.prevent="signIn">
+              <!-- email field -->
+              <b-row>
+                <b-form-group
+                  id="emailGroup"
+                  label="Email:"
+                  label-for="email"
+                  label-cols="true"
+                  label-align="left"
+                  class="input-label-text w-100">
+                  <b-form-input
+                    id="email"
+                    v-model="email"
+                    placeholder="email@domain.com"
+                    aria-describedby="email-input-feedback"
+                    :state="validateState('email')"
+                    trim>
+                  </b-form-input>
+                  <!-- required email error feedback -->
+                  <b-form-invalid-feedback
+                    v-if="!this.$v.email.email || !this.$v.email.required && signInState.requested"
+                    align="left"
+                    :state="this.$v.email.required"
+                    id="email-input-feedback">
+                    {{ !this.$v.email.email ? '* Email is invalid' : '* Email is required ' }}
+                  </b-form-invalid-feedback>
+                  <!-- email not found error feedback  -->
+                  <b-form-invalid-feedback
+                    v-if="this.$v.email.email && this.$v.email.required && signInState.requested"
+                    align="left"
+                    :state="this.$v.email.emailNotFound"
+                    id="email-input-feedback">
+                    * There is no user with this email. Try again.
+                  </b-form-invalid-feedback>
+                </b-form-group>
+              </b-row>
+
+              <!-- password field -->
+              <b-row>
+                <b-form-group
+                  id="passwordGroup"
+                  label="Password:"
+                  label-for="password"
+                  label-cols="true"
+                  label-align="left"
+                  class="input-label-text w-100">
+                  <b-form-input
+                    id="password"
+                    v-model="password"
+                    type="password"
+                    placeholder=""
+                    aria-describedby="password-input-feedback"
+                    :state="validateState('password')"
+                    trim>
+                  </b-form-input>
+                  <!-- password required feedback -->
+                  <b-form-invalid-feedback
+                    v-if="!this.$v.password.required && signInState.requested"
+                    align="left"
+                    :state="this.$v.password.required"
+                    id="password-input-feedback">
+                    * Password is required
+                  </b-form-invalid-feedback>
+                  <!-- incorrect password feedback -->
+                  <b-form-invalid-feedback
+                    v-if="this.$v.password.required && signInState.requested"
+                    align="left"
+                    :state="this.$v.password.incorrectPassword"
+                    id="password-input-feedback">
+                    * Incorrect password, try again.
+                  </b-form-invalid-feedback>
+                </b-form-group>
+              </b-row>
+              <!-- Submit button -->
+              <b-row class="justify-content-center mt-3 pl-3 pr-3">
+                <b-button type="submit" variant="info">Sign In</b-button>
+              </b-row>
+              <b-row>
+                <router-link to="/sign-up" class="pt-3 mr-4 mb-n2 sign-up-link mx-auto">
+                  Don't have an account? Sign Up
+                  <b-icon-chevron-right></b-icon-chevron-right>
+                </router-link>
+              </b-row>
+            </b-form>
+          </b-card>
+        </div>
+      </SignInOutTransition>
+    </div>
+    <!-- debug messages -->
+    <!--<p class="mt-4">sign in status: {{ this.signInState.success ? "success" : "failed" }}</p>-->
+    <!--      <p class="text-break">-->
+    <!--        sign in response: {{ JSON.stringify(this.signInState.response, undefined, 1) }}-->
+    <!--      </p>-->
   </b-container>
 </template>
 
@@ -120,6 +127,7 @@
           invalidPassword: false,
           attemptedEmail: '',
           attemptedPassword: '',
+          pending: false
         }
       };
     },
@@ -147,9 +155,11 @@
         } else {
           this.requestUserSignIn()
             .then((response) => {
+              this.$set(this.signInState, 'pending', true);
               this.$set(this.signInState, 'response', response.data);
               console.log('sign in response: ', response.data);
               if (this.signInState.response.error) {
+                this.$set(this.signInState, 'pending', false);
                 this.$set(this.signInState, 'attemptedEmail', this.email);
                 this.$set(this.signInState, 'attemptedPassword', this.password);
               } else {
@@ -160,7 +170,7 @@
         }
       },
       requestUserSignIn() {
-        const endpoint = 'http://localhost:5000/sign-in';
+        const endpoint = this.$root.signIn;
         return axios.post(endpoint, {
           email: this.email,
           password: this.password,
@@ -202,7 +212,20 @@
             );
           }
         }
-      }
+      },
+      signInState: {
+        handler: function (value) {
+          if (value.success) {
+            console.log('sign in success: ', value.success);
+            const token = this.signInState.response.token;
+            const userId = this.signInState.response.data.id;
+            localStorage.setItem('token', token);
+            this.$store.dispatch('setStateSignedIn');
+            window.location.href = `/user/${userId}`;
+          }
+        },
+        deep: true
+      },
     }
   };
 </script>
